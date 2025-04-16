@@ -5,7 +5,7 @@
 
 ---
 
-- name: Ensure Redlib paths exist
+- name: Ensure FindMyDeviceServer paths exist
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -15,7 +15,7 @@
   with_items:
     - "{{ redlib_base_path }}"
 
-- name: Ensure Redlib support files installed
+- name: Ensure FindMyDeviceServer support files installed
   ansible.builtin.template:
     src: "{{ role_path }}/templates/{{ item }}.j2"
     dest: "{{ redlib_base_path }}/{{ item }}"
@@ -26,21 +26,21 @@
     - env
     - labels
 
-- name: Ensure Redlib container image is pulled
+- name: Ensure FindMyDeviceServer container image is pulled
   community.docker.docker_image:
     name: "{{ redlib_container_image }}"
     source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
     force_source: "{{ redlib_container_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
     force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else redlib_container_image_force_pull }}"
 
-- name: Ensure Redlib container network is created
+- name: Ensure FindMyDeviceServer container network is created
   community.general.docker_network:
     enable_ipv6: "{{ devture_systemd_docker_base_ipv6_enabled }}"
     name: "{{ redlib_container_network }}"
     driver: bridge
     driver_options: "{{ devture_systemd_docker_base_container_networks_driver_options }}"
 
-- name: Ensure Redlib systemd service is present
+- name: Ensure FindMyDeviceServer systemd service is present
   ansible.builtin.template:
     src: "{{ role_path }}/templates/systemd/redlib.service.j2"
     dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ redlib_identifier }}.service"

@@ -5,7 +5,7 @@
 
 ---
 
-- name: Fail if required Redlib settings not defined
+- name: Fail if required FindMyDeviceServer settings not defined
   ansible.builtin.fail:
     msg: >
       You need to define a required configuration setting (`{{ item }}`).
@@ -19,7 +19,7 @@
 
 - when: redlib_container_labels_traefik_enabled | bool
   block:
-    - name: Fail if required Redlib Traefik settings not defined
+    - name: Fail if required FindMyDeviceServer Traefik settings not defined
       ansible.builtin.fail:
         msg: >-
           You need to define a required configuration setting (`{{ item }}`).

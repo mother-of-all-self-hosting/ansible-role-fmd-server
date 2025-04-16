@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 #jinja2: lstrip_blocks: "True"
 [Unit]
-Description=Redlib ({{ redlib_identifier }})
+Description=FindMyDeviceServer ({{ redlib_identifier }})
 {% for service in redlib_systemd_required_services_list %}
 Requires={{ service }}
 After={{ service }}

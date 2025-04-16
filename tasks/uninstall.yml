@@ -5,26 +5,26 @@
 
 ---
 
-- name: Check existence of Redlib systemd service
+- name: Check existence of FindMyDeviceServer systemd service
   ansible.builtin.stat:
     path: "{{ devture_systemd_docker_base_systemd_path }}/{{ redlib_identifier }}.service"
   register: redlib_service_stat
 
 - when: redlib_service_stat.stat.exists | bool
   block:
-    - name: Ensure Redlib systemd service is stopped
+    - name: Ensure FindMyDeviceServer systemd service is stopped
       ansible.builtin.service:
         name: "{{ redlib_identifier }}"
         state: stopped
         enabled: false
         daemon_reload: true
 
-    - name: Ensure Redlib systemd service doesn't exist
+    - name: Ensure FindMyDeviceServer systemd service doesn't exist
       ansible.builtin.file:
         path: "{{ devture_systemd_docker_base_systemd_path }}/{{ redlib_identifier }}.service"
         state: absent
 
-    - name: Ensure Redlib base directory doesn't exist
+    - name: Ensure FindMyDeviceServer base directory doesn't exist
       ansible.builtin.file:
         path: "{{ redlib_base_path }}"
         state: absent

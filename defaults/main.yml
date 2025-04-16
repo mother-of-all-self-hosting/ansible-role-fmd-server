@@ -23,13 +23,13 @@ redlib_gid: ''
 # Specify URI scheme for redlib_base_url.
 redlib_scheme: https
 
-# The hostname at which Redlib is served.
+# The hostname at which FindMyDeviceServer is served.
 redlib_hostname: ''
 
-# The path at which Redlib is exposed.
+# The path at which FindMyDeviceServer is exposed.
 # This value must either be `/` or not end with a slash (e.g. `/redlib`).
 #
-# Hosting Redlib under a subpath does not seem to be possible due to Redlib's
+# Hosting FindMyDeviceServer under a subpath does not seem to be possible due to FindMyDeviceServer's
 # technical limitations.
 redlib_path_prefix: /
 
@@ -153,13 +153,13 @@ redlib_floc_optout_enabled: true
 # See: `redlib_http_header_strict_transport_security`
 redlib_hsts_preload_enabled: false
 
-# List of systemd services that the Redlib systemd service depends on
+# List of systemd services that the FindMyDeviceServer systemd service depends on
 redlib_systemd_required_services_list: "{{ redlib_systemd_required_services_list_default + redlib_systemd_required_services_list_auto + redlib_systemd_required_services_list_custom }}"
 redlib_systemd_required_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
 redlib_systemd_required_services_list_auto: []
 redlib_systemd_required_services_list_custom: []
 
-# List of systemd services that the Redlib systemd service wants
+# List of systemd services that the FindMyDeviceServer systemd service wants
 redlib_systemd_wanted_services_list: []
 
 # Additional environment variables.
