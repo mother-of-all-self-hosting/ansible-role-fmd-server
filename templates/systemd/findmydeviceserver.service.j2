@@ -30,7 +30,6 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --log-driver=none \
       --user={{ findmydeviceserver_uid }}:{{ findmydeviceserver_gid }} \
       --cap-drop=ALL \
-      --read-only \
       --network={{ findmydeviceserver_container_network }} \
       {% if findmydeviceserver_container_http_host_bind_port %}
       -p {{ findmydeviceserver_container_http_host_bind_port }}:{{ findmydeviceserver_container_http_port }} \

@@ -7,20 +7,18 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-# Project source code URL: https://github.com/findmydeviceserver-org/findmydeviceserver
+# Project source code URL: https://gitlab.com/Nulide/findmydeviceserver
 
 findmydeviceserver_enabled: true
 
 findmydeviceserver_identifier: findmydeviceserver
 findmydeviceserver_base_path: "{{ findmydeviceserver_identifier }}"
 
-# Only "latest" tag is available
-findmydeviceserver_version: latest
+findmydeviceserver_version: v0.10.0
 
 findmydeviceserver_uid: ''
 findmydeviceserver_gid: ''
 
-# Specify URI scheme for findmydeviceserver_base_url.
 findmydeviceserver_scheme: https
 
 # The hostname at which FindMyDeviceServer is served.
@@ -33,12 +31,18 @@ findmydeviceserver_hostname: ''
 # technical limitations.
 findmydeviceserver_path_prefix: /
 
-findmydeviceserver_container_image: "{{ findmydeviceserver_container_image_registry_prefix }}findmydeviceserver/findmydeviceserver:{{ findmydeviceserver_container_image_tag }}"
+findmydeviceserver_container_image: "{{ findmydeviceserver_container_image_registry_prefix }}nulide/findmydeviceserver:{{ findmydeviceserver_container_image_tag }}"
 findmydeviceserver_container_image_tag: "{{ findmydeviceserver_version }}"
 findmydeviceserver_container_image_registry_prefix: "{{ findmydeviceserver_container_image_registry_prefix_upstream }}"
 findmydeviceserver_container_image_registry_prefix_upstream: "{{ findmydeviceserver_container_image_registry_prefix_upstream_default }}"
-findmydeviceserver_container_image_registry_prefix_upstream_default: quay.io/
+findmydeviceserver_container_image_registry_prefix_upstream_default: registry.gitlab.com/
 findmydeviceserver_container_image_force_pull: "{{ findmydeviceserver_container_image.endswith(':latest') }}"
+
+findmydeviceserver_container_image_self_build: false
+findmydeviceserver_container_image_name: "nulide/findmydeviceserver:{{ findmydeviceserver_container_image_tag }}"
+findmydeviceserver_container_repo: "https://gitlab.com/Nulide/findmydeviceserver.git"
+findmydeviceserver_container_repo_version: "{{ findmydeviceserver_version if findmydeviceserver_version != 'latest' else 'master' }}"
+findmydeviceserver_container_src_files_path: "{{ findmydeviceserver_base_path }}/docker-src"
 
 # Controls whether the container exposes its HTTP port (tcp/80 in the container).
 #
