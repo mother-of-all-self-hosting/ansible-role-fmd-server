@@ -5,48 +5,48 @@ SPDX-FileCopyrightText: 2025 Suguru Hirahara
 SPDX-License-Identifier: AGPL-3.0-or-later
 #}
 
-{% if redlib_container_labels_traefik_enabled %}
+{% if findmydeviceserver_container_labels_traefik_enabled %}
 traefik.enable=true
 
-{% if redlib_container_labels_traefik_docker_network %}
-traefik.docker.network={{ redlib_container_labels_traefik_docker_network }}
+{% if findmydeviceserver_container_labels_traefik_docker_network %}
+traefik.docker.network={{ findmydeviceserver_container_labels_traefik_docker_network }}
 {% endif %}
 
 {% set middlewares = [] %}
 
-{% if redlib_container_labels_traefik_path_prefix != '/' %}
-traefik.http.middlewares.{{ redlib_identifier }}-slashless-redirect.redirectregex.regex=({{ redlib_container_labels_traefik_path_prefix | quote }})$
-traefik.http.middlewares.{{ redlib_identifier }}-slashless-redirect.redirectregex.replacement=${1}/
-{% set middlewares = middlewares + [redlib_identifier + '-slashless-redirect'] %}
+{% if findmydeviceserver_container_labels_traefik_path_prefix != '/' %}
+traefik.http.middlewares.{{ findmydeviceserver_identifier }}-slashless-redirect.redirectregex.regex=({{ findmydeviceserver_container_labels_traefik_path_prefix | quote }})$
+traefik.http.middlewares.{{ findmydeviceserver_identifier }}-slashless-redirect.redirectregex.replacement=${1}/
+{% set middlewares = middlewares + [findmydeviceserver_identifier + '-slashless-redirect'] %}
 {% endif %}
 
-{% if redlib_container_labels_traefik_path_prefix != '/' %}
-traefik.http.middlewares.{{ redlib_identifier }}-strip-prefix.stripprefix.prefixes={{ redlib_container_labels_traefik_path_prefix }}
-{% set middlewares = middlewares + [redlib_identifier + '-strip-prefix'] %}
+{% if findmydeviceserver_container_labels_traefik_path_prefix != '/' %}
+traefik.http.middlewares.{{ findmydeviceserver_identifier }}-strip-prefix.stripprefix.prefixes={{ findmydeviceserver_container_labels_traefik_path_prefix }}
+{% set middlewares = middlewares + [findmydeviceserver_identifier + '-strip-prefix'] %}
 {% endif %}
 
-{% if redlib_container_labels_traefik_additional_response_headers.keys() | length > 0 %}
-{% for name, value in redlib_container_labels_traefik_additional_response_headers.items() %}
-traefik.http.middlewares.{{ redlib_identifier }}-add-headers.headers.customresponseheaders.{{ name }}={{ value }}
+{% if findmydeviceserver_container_labels_traefik_additional_response_headers.keys() | length > 0 %}
+{% for name, value in findmydeviceserver_container_labels_traefik_additional_response_headers.items() %}
+traefik.http.middlewares.{{ findmydeviceserver_identifier }}-add-headers.headers.customresponseheaders.{{ name }}={{ value }}
 {% endfor %}
-{% set middlewares = middlewares + [redlib_identifier + '-add-headers'] %}
+{% set middlewares = middlewares + [findmydeviceserver_identifier + '-add-headers'] %}
 {% endif %}
 
-traefik.http.routers.{{ redlib_identifier }}.rule={{ redlib_container_labels_traefik_rule }}
-{% if redlib_container_labels_traefik_priority | int > 0 %}
-traefik.http.routers.{{ redlib_identifier }}.priority={{ redlib_container_labels_traefik_priority }}
+traefik.http.routers.{{ findmydeviceserver_identifier }}.rule={{ findmydeviceserver_container_labels_traefik_rule }}
+{% if findmydeviceserver_container_labels_traefik_priority | int > 0 %}
+traefik.http.routers.{{ findmydeviceserver_identifier }}.priority={{ findmydeviceserver_container_labels_traefik_priority }}
 {% endif %}
-traefik.http.routers.{{ redlib_identifier }}.service={{ redlib_identifier }}
+traefik.http.routers.{{ findmydeviceserver_identifier }}.service={{ findmydeviceserver_identifier }}
 {% if middlewares | length > 0 %}
-traefik.http.routers.{{ redlib_identifier }}.middlewares={{ middlewares | join(',') }}
+traefik.http.routers.{{ findmydeviceserver_identifier }}.middlewares={{ middlewares | join(',') }}
 {% endif %}
-traefik.http.routers.{{ redlib_identifier }}.entrypoints={{ redlib_container_labels_traefik_entrypoints }}
-traefik.http.routers.{{ redlib_identifier }}.tls={{ redlib_container_labels_traefik_tls | to_json }}
-{% if redlib_container_labels_traefik_tls %}
-traefik.http.routers.{{ redlib_identifier }}.tls.certResolver={{ redlib_container_labels_traefik_tls_certResolver }}
-{% endif %}
-
-traefik.http.services.{{ redlib_identifier }}.loadbalancer.server.port={{ redlib_container_http_port }}
+traefik.http.routers.{{ findmydeviceserver_identifier }}.entrypoints={{ findmydeviceserver_container_labels_traefik_entrypoints }}
+traefik.http.routers.{{ findmydeviceserver_identifier }}.tls={{ findmydeviceserver_container_labels_traefik_tls | to_json }}
+{% if findmydeviceserver_container_labels_traefik_tls %}
+traefik.http.routers.{{ findmydeviceserver_identifier }}.tls.certResolver={{ findmydeviceserver_container_labels_traefik_tls_certResolver }}
 {% endif %}
 
-{{ redlib_container_labels_additional_labels }}
+traefik.http.services.{{ findmydeviceserver_identifier }}.loadbalancer.server.port={{ findmydeviceserver_container_http_port }}
+{% endif %}
+
+{{ findmydeviceserver_container_labels_additional_labels }}

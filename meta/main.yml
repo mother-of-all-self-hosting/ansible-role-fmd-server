@@ -1,7 +1,7 @@
 galaxy_info:
   author: Suguru Hirahara
   company: progressiv
-  role_name: redlib
+  role_name: findmydeviceserver
   namespace: progressiv
   description: FindMyDeviceServer
   platforms:

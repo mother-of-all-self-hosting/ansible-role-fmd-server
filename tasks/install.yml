@@ -10,38 +10,38 @@
     path: "{{ item }}"
     state: directory
     mode: "0750"
-    owner: "{{ redlib_uid }}"
-    group: "{{ redlib_gid }}"
+    owner: "{{ findmydeviceserver_uid }}"
+    group: "{{ findmydeviceserver_gid }}"
   with_items:
-    - "{{ redlib_base_path }}"
+    - "{{ findmydeviceserver_base_path }}"
 
 - name: Ensure FindMyDeviceServer support files installed
   ansible.builtin.template:
     src: "{{ role_path }}/templates/{{ item }}.j2"
-    dest: "{{ redlib_base_path }}/{{ item }}"
+    dest: "{{ findmydeviceserver_base_path }}/{{ item }}"
     mode: "0640"
-    owner: "{{ redlib_uid }}"
-    group: "{{ redlib_gid }}"
+    owner: "{{ findmydeviceserver_uid }}"
+    group: "{{ findmydeviceserver_gid }}"
   with_items:
     - env
     - labels
 
 - name: Ensure FindMyDeviceServer container image is pulled
   community.docker.docker_image:
-    name: "{{ redlib_container_image }}"
+    name: "{{ findmydeviceserver_container_image }}"
     source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
-    force_source: "{{ redlib_container_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
-    force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else redlib_container_image_force_pull }}"
+    force_source: "{{ findmydeviceserver_container_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
+    force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else findmydeviceserver_container_image_force_pull }}"
 
 - name: Ensure FindMyDeviceServer container network is created
   community.general.docker_network:
     enable_ipv6: "{{ devture_systemd_docker_base_ipv6_enabled }}"
-    name: "{{ redlib_container_network }}"
+    name: "{{ findmydeviceserver_container_network }}"
     driver: bridge
     driver_options: "{{ devture_systemd_docker_base_container_networks_driver_options }}"
 
 - name: Ensure FindMyDeviceServer systemd service is present
   ansible.builtin.template:
-    src: "{{ role_path }}/templates/systemd/redlib.service.j2"
-    dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ redlib_identifier }}.service"
+    src: "{{ role_path }}/templates/systemd/findmydeviceserver.service.j2"
+    dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ findmydeviceserver_identifier }}.service"
     mode: "0644"

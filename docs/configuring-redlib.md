@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Setting up FindMyDeviceServer
 
-This is an [Ansible](https://www.ansible.com/) role which installs [FindMyDeviceServer](https://github.com/redlib-org/redlib) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
+This is an [Ansible](https://www.ansible.com/) role which installs [FindMyDeviceServer](https://github.com/findmydeviceserver-org/findmydeviceserver) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
 FindMyDeviceServer allows you to browse Reddit without exposing your IP address, browsing habits, and other browser fingerprinting data to the website.
 
-See the project's [documentation](https://github.com/redlib-org/redlib/blob/main/README.md) to learn what FindMyDeviceServer does and why it might be useful to you.
+See the project's [documentation](https://github.com/findmydeviceserver-org/findmydeviceserver/blob/main/README.md) to learn what FindMyDeviceServer does and why it might be useful to you.
 
 ## Adjusting the playbook configuration
 
@@ -33,15 +33,15 @@ To enable FindMyDeviceServer with this role, add the following configuration to 
 ```yaml
 ########################################################################
 #                                                                      #
-# redlib                                                               #
+# findmydeviceserver                                                   #
 #                                                                      #
 ########################################################################
 
-redlib_enabled: true
+findmydeviceserver_enabled: true
 
 ########################################################################
 #                                                                      #
-# /redlib                                                              #
+# /findmydeviceserver                                                  #
 #                                                                      #
 ########################################################################
 ```
@@ -51,12 +51,12 @@ redlib_enabled: true
 To enable FindMyDeviceServer you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
 
 ```yaml
-redlib_hostname: "example.com"
+findmydeviceserver_hostname: "example.com"
 ```
 
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
 
-**Note**: hosting FindMyDeviceServer under a subpath (by configuring the `redlib_path_prefix` variable) is technically possible but not recommended, as most of the functions do not work as expected due to FindMyDeviceServer's technical limitations (pages and resources are not correctly loaded, and links are broken).
+**Note**: hosting FindMyDeviceServer under a subpath (by configuring the `findmydeviceserver_path_prefix` variable) is technically possible but not recommended, as most of the functions do not work as expected due to FindMyDeviceServer's technical limitations (pages and resources are not correctly loaded, and links are broken).
 
 ### Configure instance and user settings (optional)
 
@@ -65,27 +65,27 @@ There are various options for the instance and user settings.
 For example, if you want to enable SFW-only mode for the instance, add the following configuration to your `vars.yml` file.
 
 ```yaml
-redlib_environment_variables_redlib_sfw_only: on
+findmydeviceserver_environment_variables_findmydeviceserver_sfw_only: on
 ```
 
 If you want to set the default theme for users, add and adjust the following configuration to your `vars.yml` file:
 
 ```yaml
 # Valid values: system, light, dark, black, dracula, nord, laserwave, violet, gold, rosebox, gruvboxdark, gruvboxlight
-redlib_environment_variables_redlib_default_theme: system
+findmydeviceserver_environment_variables_findmydeviceserver_default_theme: system
 ```
 
 To change the default front page for users, add and adjust the following configuration to your `vars.yml` file:
 
 ```yaml
 # Valid values: default, popular, all
-redlib_environment_variables_redlib_default_front_page: default
+findmydeviceserver_environment_variables_findmydeviceserver_default_front_page: default
 ```
 
 To enable blurring NSFW content by default for users, add the following configuration to your `vars.yml` file:
 
 ```yaml
-redlib_environment_variables_redlib_default_blur_nsfw: on
+findmydeviceserver_environment_variables_findmydeviceserver_default_blur_nsfw: on
 ```
 
 ### Extending the configuration
@@ -94,9 +94,9 @@ There are some additional things you may wish to configure about the component.
 
 Take a look at:
 
-- [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file. You can override settings (even those that don't have dedicated playbook variables) using the `redlib_environment_variables_additional_variables` variable
+- [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file. You can override settings (even those that don't have dedicated playbook variables) using the `findmydeviceserver_environment_variables_additional_variables` variable
 
-See [`.env.example`](https://github.com/redlib-org/redlib/blob/main/.env.example) for a complete list of FindMyDeviceServer's config options that you could put in `redlib_environment_variables_additional_variables`.
+See [`.env.example`](https://github.com/findmydeviceserver-org/findmydeviceserver/blob/main/.env.example) for a complete list of FindMyDeviceServer's config options that you could put in `findmydeviceserver_environment_variables_additional_variables`.
 
 ## Installing
 
@@ -114,10 +114,10 @@ After running the command for installation, FindMyDeviceServer becomes available
 
 [Libredirect](https://libredirect.github.io/), an extension for Firefox and Chromium-based desktop browsers, has support for redirections to FindMyDeviceServer.
 
-If you would like to make your instance public so that it can be used by anyone including Libredirect, please consider to send a PR to the [upstream project](https://github.com/redlib-org/redlib-instances) to add yours to the list, which Libredirect automatically fetches using a script (see [this FAQ entry](https://libredirect.github.io/faq.html#where_the_hell_are_those_instances_coming_from)). See [here](https://github.com/redlib-org/redlib-instances/blob/main/README.md) for details about how to do so.
+If you would like to make your instance public so that it can be used by anyone including Libredirect, please consider to send a PR to the [upstream project](https://github.com/findmydeviceserver-org/findmydeviceserver-instances) to add yours to the list, which Libredirect automatically fetches using a script (see [this FAQ entry](https://libredirect.github.io/faq.html#where_the_hell_are_those_instances_coming_from)). See [here](https://github.com/findmydeviceserver-org/findmydeviceserver-instances/blob/main/README.md) for details about how to do so.
 
 ## Troubleshooting
 
 ### Check the service's logs
 
-You can find the logs in [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by logging in to the server with SSH and running `journalctl -fu redlib` (or how you/your playbook named the service, e.g. `mash-redlib`).
+You can find the logs in [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by logging in to the server with SSH and running `journalctl -fu findmydeviceserver` (or how you/your playbook named the service, e.g. `mash-findmydeviceserver`).

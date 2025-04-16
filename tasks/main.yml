@@ -6,21 +6,21 @@
 ---
 
 - block:
-    - when: redlib_enabled | bool
+    - when: findmydeviceserver_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
 
-    - when: redlib_enabled | bool
+    - when: findmydeviceserver_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
   tags:
     - setup-all
-    - setup-redlib
+    - setup-findmydeviceserver
     - install-all
-    - install-redlib
+    - install-findmydeviceserver
 
 - block:
-    - when: not redlib_enabled | bool
+    - when: not findmydeviceserver_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
   tags:
     - setup-all
-    - setup-redlib
+    - setup-findmydeviceserver
