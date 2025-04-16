@@ -16,6 +16,7 @@
     - findmydeviceserver_hostname
     - findmydeviceserver_path_prefix
     - findmydeviceserver_container_network
+    - findmydeviceserver_database_path
 
 - when: findmydeviceserver_container_labels_traefik_enabled | bool
   block:

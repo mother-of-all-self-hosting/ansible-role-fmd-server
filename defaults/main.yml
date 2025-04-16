@@ -166,5 +166,8 @@ findmydeviceserver_systemd_required_services_list_custom: []
 # List of systemd services that the FindMyDeviceServer systemd service wants
 findmydeviceserver_systemd_wanted_services_list: []
 
+# Specify the path for storing a database file on the host
+findmydeviceserver_database_path: ''
+
 # Additional environment variables.
 findmydeviceserver_environment_variables_additional_variables: ''
