@@ -37,6 +37,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --env-file={{ findmydeviceserver_base_path }}/env \
       --label-file={{ findmydeviceserver_base_path }}/labels \
       --mount type=bind,src={{ findmydeviceserver_database_path }},dst=/fmd/db/ \
+      --mount type=bind,src={{ findmydeviceserver_base_path }}/config.yml,dst=/fmd/config.yml,ro \
       {% for arg in findmydeviceserver_container_extra_arguments %}
       {{ arg }} \
       {% endfor %}

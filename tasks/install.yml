@@ -23,6 +23,7 @@
     owner: "{{ findmydeviceserver_uid }}"
     group: "{{ findmydeviceserver_gid }}"
   with_items:
+    - config.yml
     - env
     - labels
 
