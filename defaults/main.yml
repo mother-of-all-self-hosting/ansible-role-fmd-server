@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: 2023 - 2024 Nikita Chernyi
 # SPDX-FileCopyrightText: 2023 - 2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2024 Martin Jørgensen
 # SPDX-FileCopyrightText: 2024 Sergio Durigan Junior
+# SPDX-FileCopyrightText: 2024 Thore Göbel
 # SPDX-FileCopyrightText: 2025 MASH project contributors
 # SPDX-FileCopyrightText: 2025 Suguru Hirahara
 #
@@ -168,6 +170,40 @@ findmydeviceserver_systemd_wanted_services_list: []
 
 # Specify the path for storing a database file on the host
 findmydeviceserver_database_path: ''
+
+# Specify the path to listening UNIX socket. If empty, no unix sockets will be used.
+findmydeviceserver_config_unixsocketpath: ''
+
+# Specify permissions to set on the socket after it is created. If < 0, no
+# modifications are made. This considered insecure practice, if you
+# do it, consider setting a umask for the daemon user before starting it.
+# Must start with a leading 0.
+findmydeviceserver_config_unixsocketchmod: 0660
+
+# Specify the ports FMD Server should listen on.
+# Set the port value to -1 to disable it.
+# The secure port is only used if the cert and key are set (see below).
+findmydeviceserver_config_portsecure: 8443
+findmydeviceserver_config_portinsecure: 8080
+
+# Specify the length for the user IDs that are generated
+findmydeviceserver_config_useridlength: 5
+
+# Specify the number of location points or pictures FMD Server should save per account
+findmydeviceserver_config_maxsavedloc: 1000
+findmydeviceserver_config_maxsavedpic: 10
+
+# Specify a registration token if you if you want your instance to be private and not open to registrations by anyone.
+# Generating a strong token (e.g. `pwgen -s 64 1`) is recommended.
+# Leave this empty to make the instance public.
+findmydeviceserver_config_registrationtoken: ''
+
+# Specify paths to the server cert and private key (for letting Go terminate TLS)
+findmydeviceserver_config_servercrt: ''
+findmydeviceserver_config_serverkey: ''
+
+# Specify the name of the header field in which your reverse proxy records the remote IP of the client being proxied.
+findmydeviceserver_config_remoteipheader: ''
 
 # Additional environment variables.
 findmydeviceserver_environment_variables_additional_variables: ''
