@@ -20,20 +20,20 @@ UnixSocketPath: "{{ findmydeviceserver_config_unixsocketpath }}" # /tmp/fmd.sock
 # modifications are made. This considered insecure practice, if you
 # do it, consider setting a umask for the daemon user before starting it.
 # Must start with a leading 0.
-UnixSocketChmod: "{{ findmydeviceserver_config_unixsocketchmod }}"
+UnixSocketChmod: {{ findmydeviceserver_config_unixsocketchmod }}
 
 # The ports FMD Server should listen on.
 # Set the port value to -1 to disable it.
 # The secure port is only used if the cert and key are set (see below).
-PortSecure: "{{ findmydeviceserver_config_portsecure }}"
-PortInsecure: "{{ findmydeviceserver_config_portinsecure }}"
+PortSecure: {{ findmydeviceserver_config_portsecure }}
+PortInsecure: {{ findmydeviceserver_config_portinsecure }}
 
 # The length for the user IDs that are generated
-UserIdLength: "{{ findmydeviceserver_config_useridlength }}"
+UserIdLength: {{ findmydeviceserver_config_useridlength }}
 
 # How many location points or pictures FMD Server should save per account
-MaxSavedLoc: "{{ findmydeviceserver_config_maxsavedloc }}"
-MaxSavedPic: "{{ findmydeviceserver_config_maxsavedpic }}"
+MaxSavedLoc: {{ findmydeviceserver_config_maxsavedloc }}
+MaxSavedPic: {{ findmydeviceserver_config_maxsavedpic }}
 
 # If RegistrationToken is non-empty, FMD Server will require the FMD app to provide this token during registration.
 # Set this to a long random string if you want your instance to be private and not open to registrations by anyone.
