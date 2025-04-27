@@ -14,7 +14,7 @@
 findmydeviceserver_enabled: true
 
 findmydeviceserver_identifier: findmydeviceserver
-findmydeviceserver_base_path: "{{ findmydeviceserver_identifier }}"
+findmydeviceserver_base_path: "/{{ findmydeviceserver_identifier }}"
 
 # renovate: datasource=docker depName=registry.gitlab.com/nulide/findmydeviceserver
 findmydeviceserver_version: v0.10.0
