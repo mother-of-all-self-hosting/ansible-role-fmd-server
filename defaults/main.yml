@@ -9,7 +9,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-# Project source code URL: https://gitlab.com/Nulide/findmydeviceserver
+# Project source code URL: https://gitlab.com/fmd-foss/fmd-server
 
 findmydeviceserver_enabled: true
 
@@ -43,7 +43,7 @@ findmydeviceserver_container_image_force_pull: "{{ findmydeviceserver_container_
 
 findmydeviceserver_container_image_self_build: false
 findmydeviceserver_container_image_name: "nulide/findmydeviceserver:{{ findmydeviceserver_container_image_tag }}"
-findmydeviceserver_container_repo: "https://gitlab.com/Nulide/findmydeviceserver.git"
+findmydeviceserver_container_repo: "https://gitlab.com/fmd-foss/fmd-server.git"
 findmydeviceserver_container_repo_version: "{{ findmydeviceserver_version if findmydeviceserver_version != 'latest' else 'master' }}"
 findmydeviceserver_container_src_files_path: "{{ findmydeviceserver_base_path }}/docker-src"
 
