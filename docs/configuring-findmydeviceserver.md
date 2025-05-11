@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 This is an [Ansible](https://www.ansible.com/) role which installs [FMD Server](https://gitlab.com/fmd-foss/fmd-server) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
-FMD Server is the official server for [FindMyDevice (FMD)](https://gitlab.com/fmd-foss/fmd-android), which allows you to locate, ring, wipe and issue other commands to your Android device when it is lost.
+FMD Server is the official server for [FMD (FindMyDevice)](https://gitlab.com/fmd-foss/fmd-android), which allows you to locate, ring, wipe and issue other commands to your Android device when it is lost.
 
 See the project's [documentation](https://gitlab.com/fmd-foss/fmd-server/-/blob/master/README.md) to learn what FMD Server does and why it might be useful to you.
 
