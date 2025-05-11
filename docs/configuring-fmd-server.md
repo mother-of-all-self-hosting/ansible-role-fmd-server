@@ -33,7 +33,7 @@ To enable FMD Server with this role, add the following configuration to your `va
 ```yaml
 ########################################################################
 #                                                                      #
-# findmydeviceserver                                                   #
+# fmd_server                                                           #
 #                                                                      #
 ########################################################################
 
@@ -41,7 +41,7 @@ findmydeviceserver_enabled: true
 
 ########################################################################
 #                                                                      #
-# /findmydeviceserver                                                  #
+# /fmd_server                                                          #
 #                                                                      #
 ########################################################################
 ```

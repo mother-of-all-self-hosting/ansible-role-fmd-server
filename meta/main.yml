@@ -1,7 +1,7 @@
 galaxy_info:
   author: Suguru Hirahara
   company: progressiv
-  role_name: findmydeviceserver
+  role_name: fmd-server
   namespace: progressiv
   description: FMD Server
   platforms:
