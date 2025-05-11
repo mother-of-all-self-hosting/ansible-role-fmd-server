@@ -16,7 +16,7 @@ findmydeviceserver_enabled: true
 findmydeviceserver_identifier: findmydeviceserver
 findmydeviceserver_base_path: "/{{ findmydeviceserver_identifier }}"
 
-# renovate: datasource=docker depName=registry.gitlab.com/nulide/findmydeviceserver
+# renovate: datasource=docker depName=registry.gitlab.com/fmd-foss/fmd-server
 findmydeviceserver_version: v0.10.0
 
 findmydeviceserver_uid: ''
@@ -34,7 +34,7 @@ findmydeviceserver_hostname: ''
 # technical limitations.
 findmydeviceserver_path_prefix: /
 
-findmydeviceserver_container_image: "{{ findmydeviceserver_container_image_registry_prefix }}nulide/findmydeviceserver:{{ findmydeviceserver_container_image_tag }}"
+findmydeviceserver_container_image: "{{ findmydeviceserver_container_image_registry_prefix }}fmd-foss/fmd-server:{{ findmydeviceserver_container_image_tag }}"
 findmydeviceserver_container_image_tag: "{{ findmydeviceserver_version }}"
 findmydeviceserver_container_image_registry_prefix: "{{ findmydeviceserver_container_image_registry_prefix_upstream }}"
 findmydeviceserver_container_image_registry_prefix_upstream: "{{ findmydeviceserver_container_image_registry_prefix_upstream_default }}"
