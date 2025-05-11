@@ -3,7 +3,7 @@ galaxy_info:
   company: progressiv
   role_name: findmydeviceserver
   namespace: progressiv
-  description: FindMyDeviceServer
+  description: FMD Server
   platforms:
     - name: Debian
       versions:

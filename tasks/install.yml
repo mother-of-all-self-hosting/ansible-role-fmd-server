@@ -5,7 +5,7 @@
 
 ---
 
-- name: Ensure FindMyDeviceServer paths exist
+- name: Ensure FMD Server paths exist
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -15,7 +15,7 @@
   with_items:
     - "{{ findmydeviceserver_base_path }}"
 
-- name: Ensure FindMyDeviceServer support files installed
+- name: Ensure FMD Server support files installed
   ansible.builtin.template:
     src: "{{ role_path }}/templates/{{ item }}.j2"
     dest: "{{ findmydeviceserver_base_path }}/{{ item }}"
@@ -27,21 +27,21 @@
     - env
     - labels
 
-- name: Ensure FindMyDeviceServer container image is pulled
+- name: Ensure FMD Server container image is pulled
   community.docker.docker_image:
     name: "{{ findmydeviceserver_container_image }}"
     source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
     force_source: "{{ findmydeviceserver_container_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
     force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else findmydeviceserver_container_image_force_pull }}"
 
-- name: Ensure FindMyDeviceServer container network is created
+- name: Ensure FMD Server container network is created
   community.general.docker_network:
     enable_ipv6: "{{ devture_systemd_docker_base_ipv6_enabled }}"
     name: "{{ findmydeviceserver_container_network }}"
     driver: bridge
     driver_options: "{{ devture_systemd_docker_base_container_networks_driver_options }}"
 
-- name: Ensure FindMyDeviceServer systemd service is present
+- name: Ensure FMD Server systemd service is present
   ansible.builtin.template:
     src: "{{ role_path }}/templates/systemd/findmydeviceserver.service.j2"
     dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ findmydeviceserver_identifier }}.service"

@@ -5,7 +5,7 @@
 
 ---
 
-- name: Fail if required FindMyDeviceServer settings not defined
+- name: Fail if required FMD Server settings not defined
   ansible.builtin.fail:
     msg: >
       You need to define a required configuration setting (`{{ item }}`).
@@ -20,7 +20,7 @@
 
 - when: findmydeviceserver_container_labels_traefik_enabled | bool
   block:
-    - name: Fail if required FindMyDeviceServer Traefik settings not defined
+    - name: Fail if required FMD Server Traefik settings not defined
       ansible.builtin.fail:
         msg: >-
           You need to define a required configuration setting (`{{ item }}`).

@@ -16,17 +16,17 @@ SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# Setting up FindMyDeviceServer
+# Setting up FMD Server
 
-This is an [Ansible](https://www.ansible.com/) role which installs [FindMyDeviceServer](https://gitlab.com/fmd-foss/fmd-server) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
+This is an [Ansible](https://www.ansible.com/) role which installs [FMD Server](https://gitlab.com/fmd-foss/fmd-server) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
-FindMyDeviceServer is the official server for [FindMyDevice (FMD)](https://gitlab.com/fmd-foss/fmd-android), which allows you to locate, ring, wipe and issue other commands to your Android device when it is lost.
+FMD Server is the official server for [FindMyDevice (FMD)](https://gitlab.com/fmd-foss/fmd-android), which allows you to locate, ring, wipe and issue other commands to your Android device when it is lost.
 
-See the project's [documentation](https://gitlab.com/fmd-foss/fmd-server/-/blob/master/README.md) to learn what FindMyDeviceServer does and why it might be useful to you.
+See the project's [documentation](https://gitlab.com/fmd-foss/fmd-server/-/blob/master/README.md) to learn what FMD Server does and why it might be useful to you.
 
 ## Adjusting the playbook configuration
 
-To enable FindMyDeviceServer with this role, add the following configuration to your `vars.yml` file.
+To enable FMD Server with this role, add the following configuration to your `vars.yml` file.
 
 **Note**: the path should be something like `inventory/host_vars/mash.example.com/vars.yml` if you use the [MASH Ansible playbook](https://github.com/mother-of-all-self-hosting/mash-playbook).
 
@@ -48,7 +48,7 @@ findmydeviceserver_enabled: true
 
 ### Set the hostname
 
-To enable FindMyDeviceServer you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
+To enable FMD Server you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
 
 ```yaml
 findmydeviceserver_hostname: "example.com"
@@ -56,7 +56,7 @@ findmydeviceserver_hostname: "example.com"
 
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
 
-**Note**: hosting FindMyDeviceServer under a subpath (by configuring the `findmydeviceserver_path_prefix` variable) does not seem to be possible due to FindMyDeviceServer's technical limitations.
+**Note**: hosting FMD Server under a subpath (by configuring the `findmydeviceserver_path_prefix` variable) does not seem to be possible due to FMD Server's technical limitations.
 
 ### Set the path for storing a database file on the host
 
@@ -100,7 +100,7 @@ If you use the MASH playbook, the shortcut commands with the [`just` program](ht
 
 ## Usage
 
-After running the command for installation, FindMyDeviceServer becomes available at the specified hostname like `https://example.com`.
+After running the command for installation, FMD Server becomes available at the specified hostname like `https://example.com`.
 
 To use it, first you need to download the client (FindMyDevice) from [here](https://f-droid.org/packages/de.nulide.findmydevice/) and install it on your device. Open the application, go to Settings, select "FMD Server", and input the URL to the "Server URL" area. Then, select "Register" to register the device to the server by inputting FMD ID, password, and the registration token specified to `findmydeviceserver_config_registrationtoken` if the instance is set to private.
 
