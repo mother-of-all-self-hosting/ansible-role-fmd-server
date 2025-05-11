@@ -102,7 +102,7 @@ If you use the MASH playbook, the shortcut commands with the [`just` program](ht
 
 After running the command for installation, FMD Server becomes available at the specified hostname like `https://example.com`.
 
-To use it, first you need to download the client (FindMyDevice) from [here](https://f-droid.org/packages/de.nulide.findmydevice/) and install it on your device. Open the application, go to Settings, select "FMD Server", and input the URL to the "Server URL" area. Then, select "Register" to register the device to the server by inputting FMD ID, password, and the registration token specified to `findmydeviceserver_config_registrationtoken` if the instance is set to private.
+To use it, first you need to download the client (FMD) from [here](https://f-droid.org/packages/de.nulide.findmydevice/) and install it on your device. Open the application, go to Settings, select "FMD Server", and input the URL to the "Server URL" area. Then, select "Register" to register the device to the server by inputting FMD ID, password, and the registration token specified to `findmydeviceserver_config_registrationtoken` if the instance is set to private.
 
 Afrer registering the device to the server, please make sure to grant necessary permissions to the application as instructed on it. You also might want to log in to the instance on a web browser and test if the application and server work as expected by dispatching commands from the UI to ring the phone, lock it, have it take photos with front and back cameras, etc.
 
