@@ -5,6 +5,16 @@
 
 ---
 
+- name: (Deprecation) Catch and report old findmydeviceserver variables
+  ansible.builtin.fail:
+    msg: |-
+      The role has been renamed from ansible-role-findmydeviceserver to ansible-role-fmd-server after the upstream project has been rebranded. Following it the variables of the role have also been renamed.
+
+      Please change your configuration file (vars.yml) to rename all `fmd_server_`-prefixed variables (`findmydeviceserver_*` -> `fmd_server_*`).
+
+      The following variables in your configuration need to be renamed: {{ vars | dict2items | selectattr('key', 'match', 'findmydeviceserver_.*') | map (attribute='key') | join(', ') }}
+  when: "vars | dict2items | selectattr('key', 'match', 'findmydeviceserver_.*') | list | items2dict"
+
 - name: Fail if required FMD Server settings not defined
   ansible.builtin.fail:
     msg: >
