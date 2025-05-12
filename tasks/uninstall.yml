@@ -7,24 +7,24 @@
 
 - name: Check existence of FMD Server systemd service
   ansible.builtin.stat:
-    path: "{{ devture_systemd_docker_base_systemd_path }}/{{ findmydeviceserver_identifier }}.service"
-  register: findmydeviceserver_service_stat
+    path: "{{ devture_systemd_docker_base_systemd_path }}/{{ fmd_server_identifier }}.service"
+  register: fmd_server_service_stat
 
-- when: findmydeviceserver_service_stat.stat.exists | bool
+- when: fmd_server_service_stat.stat.exists | bool
   block:
     - name: Ensure FMD Server systemd service is stopped
       ansible.builtin.service:
-        name: "{{ findmydeviceserver_identifier }}"
+        name: "{{ fmd_server_identifier }}"
         state: stopped
         enabled: false
         daemon_reload: true
 
     - name: Ensure FMD Server systemd service doesn't exist
       ansible.builtin.file:
-        path: "{{ devture_systemd_docker_base_systemd_path }}/{{ findmydeviceserver_identifier }}.service"
+        path: "{{ devture_systemd_docker_base_systemd_path }}/{{ fmd_server_identifier }}.service"
         state: absent
 
     - name: Ensure FMD Server base directory doesn't exist
       ansible.builtin.file:
-        path: "{{ findmydeviceserver_base_path }}"
+        path: "{{ fmd_server_base_path }}"
         state: absent

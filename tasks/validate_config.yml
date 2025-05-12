@@ -21,14 +21,14 @@
       You need to define a required configuration setting (`{{ item }}`).
   when: "vars[item] == ''"
   with_items:
-    - findmydeviceserver_uid
-    - findmydeviceserver_gid
-    - findmydeviceserver_hostname
-    - findmydeviceserver_path_prefix
-    - findmydeviceserver_container_network
-    - findmydeviceserver_database_path
+    - fmd_server_uid
+    - fmd_server_gid
+    - fmd_server_hostname
+    - fmd_server_path_prefix
+    - fmd_server_container_network
+    - fmd_server_database_path
 
-- when: findmydeviceserver_container_labels_traefik_enabled | bool
+- when: fmd_server_container_labels_traefik_enabled | bool
   block:
     - name: Fail if required FMD Server Traefik settings not defined
       ansible.builtin.fail:
@@ -36,14 +36,14 @@
           You need to define a required configuration setting (`{{ item }}`).
       when: "vars[item] == ''"
       with_items:
-        - findmydeviceserver_container_labels_traefik_hostname
-        - findmydeviceserver_container_labels_traefik_path_prefix
+        - fmd_server_container_labels_traefik_hostname
+        - fmd_server_container_labels_traefik_path_prefix
 
     # We ensure it doesn't end with a slash, because we handle both (slash and no-slash).
-    # Knowing that `findmydeviceserver_container_labels_traefik_path_prefix` does not end with a slash
+    # Knowing that `fmd_server_container_labels_traefik_path_prefix` does not end with a slash
     # ensures we know how to set these routes up without having to do "does it end with a slash" checks elsewhere.
-    - name: Fail if findmydeviceserver_container_labels_traefik_path_prefix ends with a slash
+    - name: Fail if fmd_server_container_labels_traefik_path_prefix ends with a slash
       ansible.builtin.fail:
         msg: >-
-          findmydeviceserver_container_labels_traefik_path_prefix (`{{ findmydeviceserver_container_labels_traefik_path_prefix }}`) must either be `/` or not end with a slash (e.g. `/findmydeviceserver`).
-      when: "findmydeviceserver_container_labels_traefik_path_prefix != '/' and findmydeviceserver_container_labels_traefik_path_prefix[-1] == '/'"
+          fmd_server_container_labels_traefik_path_prefix (`{{ fmd_server_container_labels_traefik_path_prefix }}`) must either be `/` or not end with a slash (e.g. `/findmydeviceserver`).
+      when: "fmd_server_container_labels_traefik_path_prefix != '/' and fmd_server_container_labels_traefik_path_prefix[-1] == '/'"

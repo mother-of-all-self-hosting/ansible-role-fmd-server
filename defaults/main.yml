@@ -11,107 +11,107 @@
 ---
 # Project source code URL: https://gitlab.com/fmd-foss/fmd-server
 
-findmydeviceserver_enabled: true
+fmd_server_enabled: true
 
-findmydeviceserver_identifier: findmydeviceserver
-findmydeviceserver_base_path: "/{{ findmydeviceserver_identifier }}"
+fmd_server_identifier: findmydeviceserver
+fmd_server_base_path: "/{{ fmd_server_identifier }}"
 
 # renovate: datasource=docker depName=registry.gitlab.com/fmd-foss/fmd-server
-findmydeviceserver_version: v0.10.0
+fmd_server_version: v0.10.0
 
-findmydeviceserver_uid: ''
-findmydeviceserver_gid: ''
+fmd_server_uid: ''
+fmd_server_gid: ''
 
-findmydeviceserver_scheme: https
+fmd_server_scheme: https
 
 # The hostname at which FMD Server is served.
-findmydeviceserver_hostname: ''
+fmd_server_hostname: ''
 
 # The path at which FMD Server is exposed.
 # This value must either be `/` or not end with a slash (e.g. `/findmydeviceserver`).
 #
 # Hosting FMD Server under a subpath does not seem to be possible due to FMD Server's
 # technical limitations.
-findmydeviceserver_path_prefix: /
+fmd_server_path_prefix: /
 
-findmydeviceserver_container_image: "{{ findmydeviceserver_container_image_registry_prefix }}fmd-foss/fmd-server:{{ findmydeviceserver_container_image_tag }}"
-findmydeviceserver_container_image_tag: "{{ findmydeviceserver_version }}"
-findmydeviceserver_container_image_registry_prefix: "{{ findmydeviceserver_container_image_registry_prefix_upstream }}"
-findmydeviceserver_container_image_registry_prefix_upstream: "{{ findmydeviceserver_container_image_registry_prefix_upstream_default }}"
-findmydeviceserver_container_image_registry_prefix_upstream_default: registry.gitlab.com/
-findmydeviceserver_container_image_force_pull: "{{ findmydeviceserver_container_image.endswith(':latest') }}"
+fmd_server_container_image: "{{ fmd_server_container_image_registry_prefix }}fmd-foss/fmd-server:{{ fmd_server_container_image_tag }}"
+fmd_server_container_image_tag: "{{ fmd_server_version }}"
+fmd_server_container_image_registry_prefix: "{{ fmd_server_container_image_registry_prefix_upstream }}"
+fmd_server_container_image_registry_prefix_upstream: "{{ fmd_server_container_image_registry_prefix_upstream_default }}"
+fmd_server_container_image_registry_prefix_upstream_default: registry.gitlab.com/
+fmd_server_container_image_force_pull: "{{ fmd_server_container_image.endswith(':latest') }}"
 
-findmydeviceserver_container_image_self_build: false
-findmydeviceserver_container_image_name: "nulide/findmydeviceserver:{{ findmydeviceserver_container_image_tag }}"
-findmydeviceserver_container_repo: "https://gitlab.com/fmd-foss/fmd-server.git"
-findmydeviceserver_container_repo_version: "{{ findmydeviceserver_version if findmydeviceserver_version != 'latest' else 'master' }}"
-findmydeviceserver_container_src_files_path: "{{ findmydeviceserver_base_path }}/docker-src"
+fmd_server_container_image_self_build: false
+fmd_server_container_image_name: "nulide/findmydeviceserver:{{ fmd_server_container_image_tag }}"
+fmd_server_container_repo: "https://gitlab.com/fmd-foss/fmd-server.git"
+fmd_server_container_repo_version: "{{ fmd_server_version if fmd_server_version != 'latest' else 'master' }}"
+fmd_server_container_src_files_path: "{{ fmd_server_base_path }}/docker-src"
 
 # Controls whether the container exposes its HTTP port (tcp/80 in the container).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
-findmydeviceserver_container_http_host_bind_port: ''
+fmd_server_container_http_host_bind_port: ''
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
-findmydeviceserver_container_network: "{{ findmydeviceserver_identifier }}"
+fmd_server_container_network: "{{ fmd_server_identifier }}"
 
 # The port number in the container
-findmydeviceserver_container_http_port: 8080
+fmd_server_container_http_port: 8080
 
 # A list of additional container networks that the container would be connected to.
 # The role does not create these networks, so make sure they already exist.
 # Use this to expose this container to another reverse proxy, which runs in a different container network.
-findmydeviceserver_container_additional_networks: "{{ findmydeviceserver_container_additional_networks_auto + findmydeviceserver_container_additional_networks_custom }}"
-findmydeviceserver_container_additional_networks_auto: []
-findmydeviceserver_container_additional_networks_custom: []
+fmd_server_container_additional_networks: "{{ fmd_server_container_additional_networks_auto + fmd_server_container_additional_networks_custom }}"
+fmd_server_container_additional_networks_auto: []
+fmd_server_container_additional_networks_custom: []
 
 # A list of additional "volumes" to mount in the container.
 # This list gets populated dynamically at runtime. You can provide a different default value,
 # if you wish to mount your own files into the container.
 # Contains definition objects like this: `{"type": "bind", "src": "/outside", "dst": "/inside", "options": "readonly"}.
 # See the `--mount` documentation for the `docker run` command.
-findmydeviceserver_container_additional_volumes: []
+fmd_server_container_additional_volumes: []
 
-# findmydeviceserver_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
+# fmd_server_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
 # See `../templates/labels.j2` for details.
 #
-# To inject your own other container labels, see `findmydeviceserver_container_labels_additional_labels`.
-findmydeviceserver_container_labels_traefik_enabled: true
-findmydeviceserver_container_labels_traefik_docker_network: "{{ findmydeviceserver_container_network }}"
-findmydeviceserver_container_labels_traefik_hostname: "{{ findmydeviceserver_hostname }}"
+# To inject your own other container labels, see `fmd_server_container_labels_additional_labels`.
+fmd_server_container_labels_traefik_enabled: true
+fmd_server_container_labels_traefik_docker_network: "{{ fmd_server_container_network }}"
+fmd_server_container_labels_traefik_hostname: "{{ fmd_server_hostname }}"
 # The path prefix must either be `/` or not end with a slash (e.g. `/findmydeviceserver`).
-findmydeviceserver_container_labels_traefik_path_prefix: "{{ findmydeviceserver_path_prefix }}"
-findmydeviceserver_container_labels_traefik_rule: "Host(`{{ findmydeviceserver_container_labels_traefik_hostname }}`){% if findmydeviceserver_container_labels_traefik_path_prefix != '/' %} && PathPrefix(`{{ findmydeviceserver_container_labels_traefik_path_prefix }}`){% endif %}"
-findmydeviceserver_container_labels_traefik_priority: 0
-findmydeviceserver_container_labels_traefik_entrypoints: web-secure
-findmydeviceserver_container_labels_traefik_tls: "{{ findmydeviceserver_container_labels_traefik_entrypoints != 'web' }}"
-findmydeviceserver_container_labels_traefik_tls_certResolver: default  # noqa var-naming
+fmd_server_container_labels_traefik_path_prefix: "{{ fmd_server_path_prefix }}"
+fmd_server_container_labels_traefik_rule: "Host(`{{ fmd_server_container_labels_traefik_hostname }}`){% if fmd_server_container_labels_traefik_path_prefix != '/' %} && PathPrefix(`{{ fmd_server_container_labels_traefik_path_prefix }}`){% endif %}"
+fmd_server_container_labels_traefik_priority: 0
+fmd_server_container_labels_traefik_entrypoints: web-secure
+fmd_server_container_labels_traefik_tls: "{{ fmd_server_container_labels_traefik_entrypoints != 'web' }}"
+fmd_server_container_labels_traefik_tls_certResolver: default  # noqa var-naming
 
 # Controls which additional headers to attach to all HTTP responses.
-# To add your own custom response headers, use `findmydeviceserver_container_labels_traefik_additional_response_headers_custom`
-findmydeviceserver_container_labels_traefik_additional_response_headers: "{{ findmydeviceserver_container_labels_traefik_additional_response_headers_auto | combine(findmydeviceserver_container_labels_traefik_additional_response_headers_custom) }}"
-findmydeviceserver_container_labels_traefik_additional_response_headers_auto: |
+# To add your own custom response headers, use `fmd_server_container_labels_traefik_additional_response_headers_custom`
+fmd_server_container_labels_traefik_additional_response_headers: "{{ fmd_server_container_labels_traefik_additional_response_headers_auto | combine(fmd_server_container_labels_traefik_additional_response_headers_custom) }}"
+fmd_server_container_labels_traefik_additional_response_headers_auto: |
   {{
     {}
-    | combine ({'X-XSS-Protection': findmydeviceserver_http_header_xss_protection} if findmydeviceserver_http_header_xss_protection else {})
-    | combine ({'X-Content-Type-Options': findmydeviceserver_http_header_content_type_options} if findmydeviceserver_http_header_content_type_options else {})
-    | combine ({'Content-Security-Policy': findmydeviceserver_http_header_content_security_policy} if findmydeviceserver_http_header_content_security_policy else {})
-    | combine ({'Permission-Policy': findmydeviceserver_http_header_content_permission_policy} if findmydeviceserver_http_header_content_permission_policy else {})
-    | combine ({'Strict-Transport-Security': findmydeviceserver_http_header_strict_transport_security} if findmydeviceserver_http_header_strict_transport_security and findmydeviceserver_container_labels_traefik_tls else {})
+    | combine ({'X-XSS-Protection': fmd_server_http_header_xss_protection} if fmd_server_http_header_xss_protection else {})
+    | combine ({'X-Content-Type-Options': fmd_server_http_header_content_type_options} if fmd_server_http_header_content_type_options else {})
+    | combine ({'Content-Security-Policy': fmd_server_http_header_content_security_policy} if fmd_server_http_header_content_security_policy else {})
+    | combine ({'Permission-Policy': fmd_server_http_header_content_permission_policy} if fmd_server_http_header_content_permission_policy else {})
+    | combine ({'Strict-Transport-Security': fmd_server_http_header_strict_transport_security} if fmd_server_http_header_strict_transport_security and fmd_server_container_labels_traefik_tls else {})
   }}
-findmydeviceserver_container_labels_traefik_additional_response_headers_custom: {}
+fmd_server_container_labels_traefik_additional_response_headers_custom: {}
 
-# findmydeviceserver_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
+# fmd_server_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
 # See `../templates/labels.j2` for details.
 #
 # Example:
-# findmydeviceserver_container_labels_additional_labels: |
+# fmd_server_container_labels_additional_labels: |
 #   my.label=1
 #   another.label="here"
-findmydeviceserver_container_labels_additional_labels: ''
+fmd_server_container_labels_additional_labels: ''
 
 # A list of extra arguments to pass to the container (`docker run` command)
-findmydeviceserver_container_extra_arguments: []
+fmd_server_container_extra_arguments: []
 
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
@@ -119,23 +119,23 @@ findmydeviceserver_container_extra_arguments: []
 # Learn more about it is here:
 # - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
 # - https://portswigger.net/web-security/cross-site-scripting/reflected
-findmydeviceserver_http_header_xss_protection: "1; mode=block"
+fmd_server_http_header_xss_protection: "1; mode=block"
 
 # Specifies the value of the `X-Content-Type-Options` header.
 # See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
-findmydeviceserver_http_header_content_type_options: nosniff
+fmd_server_http_header_content_type_options: nosniff
 
 # Specifies the value of the `Content-Security-Policy` header.
 # See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
-findmydeviceserver_http_header_content_security_policy: frame-ancestors 'self'
+fmd_server_http_header_content_security_policy: frame-ancestors 'self'
 
 # Specifies the value of the `Permission-Policy` header.
 # See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permission-Policy
-findmydeviceserver_http_header_content_permission_policy: "{{ 'interest-cohort=()' if findmydeviceserver_floc_optout_enabled else '' }}"
+fmd_server_http_header_content_permission_policy: "{{ 'interest-cohort=()' if fmd_server_floc_optout_enabled else '' }}"
 
 # Specifies the value of the `Strict-Transport-Security` header.
 # See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
-findmydeviceserver_http_header_strict_transport_security: "max-age=31536000; includeSubDomains{{ '; preload' if findmydeviceserver_hsts_preload_enabled else '' }}"
+fmd_server_http_header_strict_transport_security: "max-age=31536000; includeSubDomains{{ '; preload' if fmd_server_hsts_preload_enabled else '' }}"
 
 # Controls whether to send a "Permissions-Policy interest-cohort=();" header along with all responses
 #
@@ -145,8 +145,8 @@ findmydeviceserver_http_header_strict_transport_security: "max-age=31536000; inc
 # - https://amifloced.org/
 #
 # Of course, a better solution is to just stop using browsers (like Chrome), which participate in such tracking practices.
-# See: `findmydeviceserver_content_permission_policy`
-findmydeviceserver_floc_optout_enabled: true
+# See: `fmd_server_content_permission_policy`
+fmd_server_floc_optout_enabled: true
 
 # Controls if HSTS preloading is enabled
 #
@@ -157,54 +157,54 @@ findmydeviceserver_floc_optout_enabled: true
 # - https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
 # - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
 # - https://hstspreload.org/#opt-in
-# See: `findmydeviceserver_http_header_strict_transport_security`
-findmydeviceserver_hsts_preload_enabled: false
+# See: `fmd_server_http_header_strict_transport_security`
+fmd_server_hsts_preload_enabled: false
 
 # List of systemd services that the FMD Server systemd service depends on
-findmydeviceserver_systemd_required_services_list: "{{ findmydeviceserver_systemd_required_services_list_default + findmydeviceserver_systemd_required_services_list_auto + findmydeviceserver_systemd_required_services_list_custom }}"
-findmydeviceserver_systemd_required_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
-findmydeviceserver_systemd_required_services_list_auto: []
-findmydeviceserver_systemd_required_services_list_custom: []
+fmd_server_systemd_required_services_list: "{{ fmd_server_systemd_required_services_list_default + fmd_server_systemd_required_services_list_auto + fmd_server_systemd_required_services_list_custom }}"
+fmd_server_systemd_required_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
+fmd_server_systemd_required_services_list_auto: []
+fmd_server_systemd_required_services_list_custom: []
 
 # List of systemd services that the FMD Server systemd service wants
-findmydeviceserver_systemd_wanted_services_list: []
+fmd_server_systemd_wanted_services_list: []
 
 # Specify the path for storing a database file on the host
-findmydeviceserver_database_path: ''
+fmd_server_database_path: ''
 
 # Specify the path to listening UNIX socket. If empty, no unix sockets will be used.
-findmydeviceserver_config_unixsocketpath: ''
+fmd_server_config_unixsocketpath: ''
 
 # Specify permissions to set on the socket after it is created. If < 0, no
 # modifications are made. This considered insecure practice, if you
 # do it, consider setting a umask for the daemon user before starting it.
 # Must start with a leading 0.
-findmydeviceserver_config_unixsocketchmod: 0660
+fmd_server_config_unixsocketchmod: 0660
 
 # Specify the ports FMD Server should listen on.
 # Set the port value to -1 to disable it.
 # The secure port is only used if the cert and key are set (see below).
-findmydeviceserver_config_portsecure: 8443
-findmydeviceserver_config_portinsecure: 8080
+fmd_server_config_portsecure: 8443
+fmd_server_config_portinsecure: 8080
 
 # Specify the length for the user IDs that are generated
-findmydeviceserver_config_useridlength: 5
+fmd_server_config_useridlength: 5
 
 # Specify the number of location points or pictures FMD Server should save per account
-findmydeviceserver_config_maxsavedloc: 1000
-findmydeviceserver_config_maxsavedpic: 10
+fmd_server_config_maxsavedloc: 1000
+fmd_server_config_maxsavedpic: 10
 
 # Specify a registration token if you if you want your instance to be private and not open to registrations by anyone.
 # Generating a strong token (e.g. `pwgen -s 64 1`) is recommended.
 # Leave this empty to make the instance public.
-findmydeviceserver_config_registrationtoken: ''
+fmd_server_config_registrationtoken: ''
 
 # Specify paths to the server cert and private key (for letting Go terminate TLS)
-findmydeviceserver_config_servercrt: ''
-findmydeviceserver_config_serverkey: ''
+fmd_server_config_servercrt: ''
+fmd_server_config_serverkey: ''
 
 # Specify the name of the header field in which your reverse proxy records the remote IP of the client being proxied.
-findmydeviceserver_config_remoteipheader: ''
+fmd_server_config_remoteipheader: ''
 
 # Additional environment variables.
-findmydeviceserver_environment_variables_additional_variables: ''
+fmd_server_environment_variables_additional_variables: ''

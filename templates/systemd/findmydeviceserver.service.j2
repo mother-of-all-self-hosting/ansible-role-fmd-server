@@ -8,12 +8,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 #jinja2: lstrip_blocks: "True"
 [Unit]
-Description=FMD Server ({{ findmydeviceserver_identifier }})
-{% for service in findmydeviceserver_systemd_required_services_list %}
+Description=FMD Server ({{ fmd_server_identifier }})
+{% for service in fmd_server_systemd_required_services_list %}
 Requires={{ service }}
 After={{ service }}
 {% endfor %}
-{% for service in findmydeviceserver_systemd_wanted_services_list %}
+{% for service in fmd_server_systemd_wanted_services_list %}
 Wants={{ service }}
 {% endfor %}
 DefaultDependencies=no
@@ -21,40 +21,40 @@ DefaultDependencies=no
 [Service]
 Type=simple
 Environment="HOME={{ devture_systemd_docker_base_systemd_unit_home_path }}"
-ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ findmydeviceserver_identifier }} 2>/dev/null || true'
-ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ findmydeviceserver_identifier }} 2>/dev/null || true'
+ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ fmd_server_identifier }} 2>/dev/null || true'
+ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ fmd_server_identifier }} 2>/dev/null || true'
 
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --rm \
-      --name={{ findmydeviceserver_identifier }} \
+      --name={{ fmd_server_identifier }} \
       --log-driver=none \
-      --user={{ findmydeviceserver_uid }}:{{ findmydeviceserver_gid }} \
+      --user={{ fmd_server_uid }}:{{ fmd_server_gid }} \
       --cap-drop=ALL \
-      --network={{ findmydeviceserver_container_network }} \
-      {% if findmydeviceserver_container_http_host_bind_port %}
-      -p {{ findmydeviceserver_container_http_host_bind_port }}:{{ findmydeviceserver_container_http_port }} \
+      --network={{ fmd_server_container_network }} \
+      {% if fmd_server_container_http_host_bind_port %}
+      -p {{ fmd_server_container_http_host_bind_port }}:{{ fmd_server_container_http_port }} \
       {% endif %}
-      --env-file={{ findmydeviceserver_base_path }}/env \
-      --label-file={{ findmydeviceserver_base_path }}/labels \
-      --mount type=bind,src={{ findmydeviceserver_database_path }},dst=/fmd/db/ \
-      --mount type=bind,src={{ findmydeviceserver_base_path }}/config.yml,dst=/fmd/config.yml,ro \
-      {% for arg in findmydeviceserver_container_extra_arguments %}
+      --env-file={{ fmd_server_base_path }}/env \
+      --label-file={{ fmd_server_base_path }}/labels \
+      --mount type=bind,src={{ fmd_server_database_path }},dst=/fmd/db/ \
+      --mount type=bind,src={{ fmd_server_base_path }}/config.yml,dst=/fmd/config.yml,ro \
+      {% for arg in fmd_server_container_extra_arguments %}
       {{ arg }} \
       {% endfor %}
-      {{ findmydeviceserver_container_image }}
+      {{ fmd_server_container_image }}
 
-{% for network in findmydeviceserver_container_additional_networks %}
-ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ findmydeviceserver_identifier }}
+{% for network in fmd_server_container_additional_networks %}
+ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ fmd_server_identifier }}
 {% endfor %}
 
-ExecStart={{ devture_systemd_docker_base_host_command_docker }} start --attach {{ findmydeviceserver_identifier }}
+ExecStart={{ devture_systemd_docker_base_host_command_docker }} start --attach {{ fmd_server_identifier }}
 
-ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ findmydeviceserver_identifier }} 2>/dev/null || true'
-ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ findmydeviceserver_identifier }} 2>/dev/null || true'
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ fmd_server_identifier }} 2>/dev/null || true'
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ fmd_server_identifier }} 2>/dev/null || true'
 
 Restart=always
 RestartSec=30
-SyslogIdentifier={{ findmydeviceserver_identifier }}
+SyslogIdentifier={{ fmd_server_identifier }}
 
 [Install]
 WantedBy=multi-user.target

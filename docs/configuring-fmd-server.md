@@ -37,7 +37,7 @@ To enable FMD Server with this role, add the following configuration to your `va
 #                                                                      #
 ########################################################################
 
-findmydeviceserver_enabled: true
+fmd_server_enabled: true
 
 ########################################################################
 #                                                                      #
@@ -51,12 +51,12 @@ findmydeviceserver_enabled: true
 To enable FMD Server you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
 
 ```yaml
-findmydeviceserver_hostname: "example.com"
+fmd_server_hostname: "example.com"
 ```
 
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
 
-**Note**: hosting FMD Server under a subpath (by configuring the `findmydeviceserver_path_prefix` variable) does not seem to be possible due to FMD Server's technical limitations.
+**Note**: hosting FMD Server under a subpath (by configuring the `fmd_server_path_prefix` variable) does not seem to be possible due to FMD Server's technical limitations.
 
 ### Set the path for storing a database file on the host
 
@@ -65,7 +65,7 @@ For a persistent storage for a database file, you need to add a Docker volume to
 To add the volume, prepare a directory on the host machine and add the following configuration to your `vars.yml` file:
 
 ```yaml
-findmydeviceserver_database_path: /path/on/the/host
+fmd_server_database_path: /path/on/the/host
 ```
 
 Make sure permissions of the directory specified to `/path/on/the/host`.
@@ -77,7 +77,7 @@ With the default setting, the instance will be public and open to registration b
 To make it private and have it require a token for registration, set it by adding the following configuration to your `vars.yml` file. Make sure to replace `YOUR_TOKEN_HERE` with your own value. Generating a strong token (e.g. `pwgen -s 64 1`) is recommended.
 
 ```yaml
-findmydeviceserver_config_registrationtoken: YOUR_TOKEN_HERE
+fmd_server_config_registrationtoken: YOUR_TOKEN_HERE
 ```
 
 ### Extending the configuration
@@ -102,7 +102,7 @@ If you use the MASH playbook, the shortcut commands with the [`just` program](ht
 
 After running the command for installation, FMD Server becomes available at the specified hostname like `https://example.com`.
 
-To use it, first you need to download the client (FMD) from [here](https://f-droid.org/packages/de.nulide.findmydevice/) and install it on your device. Open the application, go to Settings, select "FMD Server", and input the URL to the "Server URL" area. Then, select "Register" to register the device to the server by inputting FMD ID, password, and the registration token specified to `findmydeviceserver_config_registrationtoken` if the instance is set to private.
+To use it, first you need to download the client (FMD) from [here](https://f-droid.org/packages/de.nulide.findmydevice/) and install it on your device. Open the application, go to Settings, select "FMD Server", and input the URL to the "Server URL" area. Then, select "Register" to register the device to the server by inputting FMD ID, password, and the registration token specified to `fmd_server_config_registrationtoken` if the instance is set to private.
 
 Afrer registering the device to the server, please make sure to grant necessary permissions to the application as instructed on it. You also might want to log in to the instance on a web browser and test if the application and server work as expected by dispatching commands from the UI to ring the phone, lock it, have it take photos with front and back cameras, etc.
 
