@@ -17,7 +17,7 @@ fmd_server_identifier: findmydeviceserver
 fmd_server_base_path: "/{{ fmd_server_identifier }}"
 
 # renovate: datasource=docker depName=registry.gitlab.com/fmd-foss/fmd-server
-fmd_server_version: v0.10.0
+fmd_server_version: v0.11.0
 
 fmd_server_uid: ''
 fmd_server_gid: ''
