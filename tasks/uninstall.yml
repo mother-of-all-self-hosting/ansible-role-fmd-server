@@ -19,12 +19,12 @@
         enabled: false
         daemon_reload: true
 
-    - name: Ensure FMD Server systemd service doesn't exist
+    - name: Ensure FMD Server systemd service does not exist
       ansible.builtin.file:
         path: "{{ devture_systemd_docker_base_systemd_path }}/{{ fmd_server_identifier }}.service"
         state: absent
 
-    - name: Ensure FMD Server base directory doesn't exist
+    - name: Ensure FMD Server path does not exist
       ansible.builtin.file:
         path: "{{ fmd_server_base_path }}"
         state: absent
