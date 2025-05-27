@@ -4,7 +4,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: (Deprecation) Catch and report old findmydeviceserver variables
   ansible.builtin.fail:
     msg: |-
@@ -12,7 +11,7 @@
 
       Please change your configuration file (vars.yml) to rename all `fmd_server_`-prefixed variables (`findmydeviceserver_*` -> `fmd_server_*`).
 
-      The following variables in your configuration need to be renamed: {{ vars | dict2items | selectattr('key', 'match', 'findmydeviceserver_.*') | map (attribute='key') | join(', ') }}
+      The following variables in your configuration need to be renamed: {{ vars | dict2items | selectattr('key', 'match', 'findmydeviceserver_.*') | map(attribute='key') | join(', ') }}
   when: "vars | dict2items | selectattr('key', 'match', 'findmydeviceserver_.*') | list | items2dict"
 
 - name: Fail if required FMD Server settings not defined
@@ -28,7 +27,8 @@
     - fmd_server_container_network
     - fmd_server_database_path
 
-- when: fmd_server_container_labels_traefik_enabled | bool
+- name: Run if Traefik is enabled
+  when: fmd_server_container_labels_traefik_enabled | bool
   block:
     - name: Fail if required FMD Server Traefik settings not defined
       ansible.builtin.fail:

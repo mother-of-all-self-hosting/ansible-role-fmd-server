@@ -4,27 +4,25 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: Perform FMD Server installation tasks
-  block:
-    - name: Validate FMD Server configuration
-      when: fmd_server_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
-
-    - name: Install FMD Server
-      when: fmd_server_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
   tags:
     - setup-all
     - setup-fmd-server
     - install-all
     - install-fmd-server
+  block:
+    - name: Validate FMD Server configuration
+      when: fmd_server_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
+    - name: Install FMD Server
+      when: fmd_server_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
 - name: Perform FMD Server uninstallation tasks
+  tags:
+    - setup-all
+    - setup-fmd-server
   block:
     - name: Uninstall FMD Server
       when: not fmd_server_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
-  tags:
-    - setup-all
-    - setup-fmd-server

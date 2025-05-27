@@ -179,7 +179,7 @@ fmd_server_config_unixsocketpath: ''
 # modifications are made. This considered insecure practice, if you
 # do it, consider setting a umask for the daemon user before starting it.
 # Must start with a leading 0.
-fmd_server_config_unixsocketchmod: 0660
+fmd_server_config_unixsocketchmod: "0660"
 
 # Specify the ports FMD Server should listen on.
 # Set the port value to -1 to disable it.
