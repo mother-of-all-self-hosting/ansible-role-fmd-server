@@ -5,6 +5,7 @@
 
 ---
 - name: Perform FMD Server installation tasks
+  when: fmd_server_enabled | bool
   tags:
     - setup-all
     - setup-fmd-server
@@ -12,17 +13,15 @@
     - install-fmd-server
   block:
     - name: Validate FMD Server configuration
-      when: fmd_server_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
     - name: Install FMD Server
-      when: fmd_server_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
 - name: Perform FMD Server uninstallation tasks
+  when: not fmd_server_enabled | bool
   tags:
     - setup-all
     - setup-fmd-server
   block:
     - name: Uninstall FMD Server
-      when: not fmd_server_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
