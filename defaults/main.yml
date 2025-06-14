@@ -42,10 +42,10 @@ fmd_server_container_image_registry_prefix_upstream_default: registry.gitlab.com
 fmd_server_container_image_force_pull: "{{ fmd_server_container_image.endswith(':latest') }}"
 
 fmd_server_container_image_self_build: false
-fmd_server_container_image_name: "fmd-foss/fmd-server:{{ fmd_server_container_repo_version }}"
-fmd_server_container_repo: "https://gitlab.com/fmd-foss/fmd-server.git"
-fmd_server_container_repo_version: "{{ fmd_server_version if fmd_server_version != 'latest' else 'master' }}"
-fmd_server_container_src_files_path: "{{ fmd_server_base_path }}/docker-src"
+fmd_server_container_image_self_build_name: "fmd-foss/fmd-server:{{ fmd_server_container_image_self_build_repo_version }}"
+fmd_server_container_image_self_build_repo: "https://gitlab.com/fmd-foss/fmd-server.git"
+fmd_server_container_image_self_build_repo_version: "{{ fmd_server_version if fmd_server_version != 'latest' else 'master' }}"
+fmd_server_container_image_self_build_src_files_path: "{{ fmd_server_base_path }}/docker-src"
 
 # Controls whether the container exposes its HTTP port (tcp/80 in the container).
 #
