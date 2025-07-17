@@ -15,6 +15,7 @@ fmd_server_enabled: true
 
 fmd_server_identifier: findmydeviceserver
 fmd_server_base_path: "/{{ fmd_server_identifier }}"
+fmd_server_database_path: "{{ fmd_server_base_path }}/database"
 
 # renovate: datasource=docker depName=registry.gitlab.com/fmd-foss/fmd-server
 fmd_server_version: v0.11.0
@@ -168,9 +169,6 @@ fmd_server_systemd_required_services_list_custom: []
 
 # List of systemd services that the FMD Server systemd service wants
 fmd_server_systemd_wanted_services_list: []
-
-# Specify the path for storing a database file on the host
-fmd_server_database_path: ''
 
 # Specify the path to listening UNIX socket. If empty, no unix sockets will be used.
 fmd_server_config_unixsocketpath: ''

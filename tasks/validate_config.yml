@@ -25,7 +25,6 @@
     - fmd_server_hostname
     - fmd_server_path_prefix
     - fmd_server_container_network
-    - fmd_server_database_path
 
 - name: Run if Traefik is enabled
   when: fmd_server_container_labels_traefik_enabled | bool

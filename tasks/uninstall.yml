@@ -24,6 +24,15 @@
         path: "{{ devture_systemd_docker_base_systemd_path }}/{{ fmd_server_identifier }}.service"
         state: absent
 
+    - name: Ensure FMD Server support files do not exist
+      ansible.builtin.file:
+        path: "{{ fmd_server_base_path }}/{{ item }}"
+        state: absent
+      with_items:
+        - config.yml
+        - env
+        - labels
+
     - name: Ensure FMD Server container network does not exist via community.docker.docker_network
       when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
       community.docker.docker_network:
@@ -39,7 +48,20 @@
       register: network_deletion_result
       changed_when: fmd_server_container_network in network_deletion_result.stdout
 
-    - name: Ensure FMD Server path does not exist
-      ansible.builtin.file:
-        path: "{{ fmd_server_base_path }}"
-        state: absent
+- name: Check existence of FMD Server local data path
+  ansible.builtin.stat:
+    path: "{{ fmd_server_database_path }}"
+  register: fmd_server_database_path_stat
+
+# We just want to notify the user. Deleting database is too destructive.
+- name: Notify if FMD Server local data remains
+  when: fmd_server_database_path_stat.stat.exists | bool
+  ansible.builtin.set_fact:
+    devture_playbook_runtime_messages_list: |
+      {{
+        devture_playbook_runtime_messages_list | default([])
+        +
+        [
+          "Note: As a local FMD Server instance has been removed, some old database remains in `{{ fmd_server_database_path }}`. Feel free to delete it."
+        ]
+      }}

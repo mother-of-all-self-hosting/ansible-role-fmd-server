@@ -13,6 +13,7 @@
     group: "{{ fmd_server_gid }}"
   with_items:
     - "{{ fmd_server_base_path }}"
+    - "{{ fmd_server_database_path }}"
 
 - name: Ensure FMD Server support files installed
   ansible.builtin.template:
