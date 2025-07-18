@@ -62,6 +62,6 @@
         devture_playbook_runtime_messages_list | default([])
         +
         [
-          "Note: As a local FMD Server instance has been removed, some old database remains in `{{ fmd_server_database_path }}`. Feel free to delete it."
+          "Note: As the local FMD Server instance has been removed, some old database remains in `{{ fmd_server_database_path }}`. Feel free to delete it."
         ]
       }}
