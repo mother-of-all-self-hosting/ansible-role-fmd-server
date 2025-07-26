@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2023 - 2025 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2025 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -11,8 +11,8 @@
 
       Please change your configuration file (vars.yml) to rename all `fmd_server_`-prefixed variables (`findmydeviceserver_*` -> `fmd_server_*`).
 
-      The following variables in your configuration need to be renamed: {{ vars | dict2items | selectattr('key', 'match', 'findmydeviceserver_.*') | map(attribute='key') | join(', ') }}
-  when: "vars | dict2items | selectattr('key', 'match', 'findmydeviceserver_.*') | list | items2dict"
+      The following variables in your configuration need to be renamed: {{ lookup('ansible.builtin.varnames', '^findmydeviceserver_.+', wantlist=True) | join(', ') }}
+  when: "lookup('ansible.builtin.varnames', '^findmydeviceserver_.+', wantlist=True) | length > 0"
 
 - name: Fail if required FMD Server settings not defined
   ansible.builtin.fail:
