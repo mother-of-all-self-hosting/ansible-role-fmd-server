@@ -88,6 +88,12 @@ fmd_server_container_labels_traefik_entrypoints: web-secure
 fmd_server_container_labels_traefik_tls: "{{ fmd_server_container_labels_traefik_entrypoints != 'web' }}"
 fmd_server_container_labels_traefik_tls_certResolver: default  # noqa var-naming
 
+# Controls which additional headers to attach to all HTTP requests.
+# To add your own custom request headers, use `fmd_server_container_labels_traefik_additional_request_headers_custom`
+fmd_server_container_labels_traefik_additional_request_headers: "{{ fmd_server_container_labels_traefik_additional_request_headers_auto | combine(fmd_server_container_labels_traefik_additional_request_headers_custom) }}"
+fmd_server_container_labels_traefik_additional_request_headers_auto: {}
+fmd_server_container_labels_traefik_additional_request_headers_custom: {}
+
 # Controls which additional headers to attach to all HTTP responses.
 # To add your own custom response headers, use `fmd_server_container_labels_traefik_additional_response_headers_custom`
 fmd_server_container_labels_traefik_additional_response_headers: "{{ fmd_server_container_labels_traefik_additional_response_headers_auto | combine(fmd_server_container_labels_traefik_additional_response_headers_custom) }}"
