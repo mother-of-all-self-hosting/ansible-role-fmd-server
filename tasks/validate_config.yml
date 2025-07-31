@@ -38,6 +38,13 @@
         - fmd_server_container_labels_traefik_hostname
         - fmd_server_container_labels_traefik_path_prefix
 
+    - name: Fail if fmd_server_container_labels_traefik_path_prefix is different than /
+      ansible.builtin.fail:
+        msg: >-
+          fmd_server_container_labels_traefik_path_prefix (`{{ fmd_server_container_labels_traefik_path_prefix }}`) must be `/`.
+          FMD Server does not support hosting under a subpath yet.
+      when: "fmd_server_container_labels_traefik_path_prefix != '/'"
+
     # We ensure it doesn't end with a slash, because we handle both (slash and no-slash).
     # Knowing that `fmd_server_container_labels_traefik_path_prefix` does not end with a slash
     # ensures we know how to set these routes up without having to do "does it end with a slash" checks elsewhere.
