@@ -176,7 +176,10 @@ fmd_server_systemd_required_services_list_auto: []
 fmd_server_systemd_required_services_list_custom: []
 
 # List of systemd services that the FMD Server systemd service wants
-fmd_server_systemd_wanted_services_list: []
+fmd_server_systemd_wanted_services_list: "{{ fmd_server_systemd_wanted_services_list_default + fmd_server_systemd_wanted_services_list_auto + fmd_server_systemd_wanted_services_list_custom }}"
+fmd_server_systemd_wanted_services_list_default: []
+fmd_server_systemd_wanted_services_list_auto: []
+fmd_server_systemd_wanted_services_list_custom: []
 
 # Specify the path to listening UNIX socket. If empty, no unix sockets will be used.
 fmd_server_config_unixsocketpath: ''
