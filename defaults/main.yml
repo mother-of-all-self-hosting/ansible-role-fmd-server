@@ -20,13 +20,13 @@ fmd_server_database_path: "{{ fmd_server_base_path }}/database"
 # renovate: datasource=docker depName=registry.gitlab.com/fmd-foss/fmd-server
 fmd_server_version: v0.12.0
 
-fmd_server_uid: ''
-fmd_server_gid: ''
+fmd_server_uid: ""
+fmd_server_gid: ""
 
 fmd_server_scheme: https
 
 # The hostname at which FMD Server is served.
-fmd_server_hostname: ''
+fmd_server_hostname: ""
 
 # The path at which FMD Server is exposed.
 # This value must either be `/` or not end with a slash (e.g. `/findmydeviceserver`).
@@ -51,7 +51,7 @@ fmd_server_container_image_self_build_src_files_path: "{{ fmd_server_base_path }
 # Controls whether the container exposes its HTTP port (tcp/80 in the container).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
-fmd_server_container_http_host_bind_port: ''
+fmd_server_container_http_host_bind_port: ""
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
 fmd_server_container_network: "{{ fmd_server_identifier }}"
@@ -117,7 +117,7 @@ fmd_server_container_labels_traefik_additional_response_headers_custom: {}
 # fmd_server_container_labels_additional_labels: |
 #   my.label=1
 #   another.label="here"
-fmd_server_container_labels_additional_labels: ''
+fmd_server_container_labels_additional_labels: ""
 
 # A list of extra arguments to pass to the container (`docker run` command)
 fmd_server_container_extra_arguments: []
@@ -182,7 +182,7 @@ fmd_server_systemd_wanted_services_list_auto: []
 fmd_server_systemd_wanted_services_list_custom: []
 
 # Specify the path to listening UNIX socket. If empty, no unix sockets will be used.
-fmd_server_config_unixsocketpath: ''
+fmd_server_config_unixsocketpath: ""
 
 # Specify permissions to set on the socket after it is created. If < 0, no
 # modifications are made. This considered insecure practice, if you
@@ -206,15 +206,15 @@ fmd_server_config_maxsavedpic: 10
 # Specify a registration token if you if you want your instance to be private and not open to registrations by anyone.
 # Generating a strong token (e.g. `pwgen -s 64 1`) is recommended.
 # Leave this empty to make the instance public.
-fmd_server_config_registrationtoken: ''
+fmd_server_config_registrationtoken: ""
 
 # Specify paths to the server cert and private key (for letting Go terminate TLS)
-fmd_server_config_servercrt: ''
-fmd_server_config_serverkey: ''
+fmd_server_config_servercrt: ""
+fmd_server_config_serverkey: ""
 
 # Specify the name of the header field in which your reverse proxy records the remote IP of the client being proxied.
-fmd_server_config_remoteipheader: ''
+fmd_server_config_remoteipheader: ""
 
 # Additional environment variables.
 # See: https://gitlab.com/fmd-foss/fmd-server#via-environment-variables
-fmd_server_environment_variables_additional_variables: ''
+fmd_server_environment_variables_additional_variables: ""
