@@ -1,9 +1,10 @@
 # SPDX-FileCopyrightText: 2023 - 2024 Nikita Chernyi
+# SPDX-FileCopyrightText: 2023 - 2025 MASH project contributors
 # SPDX-FileCopyrightText: 2023 - 2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2023 Niels Bouma
 # SPDX-FileCopyrightText: 2024 Martin Jørgensen
 # SPDX-FileCopyrightText: 2024 Sergio Durigan Junior
 # SPDX-FileCopyrightText: 2024 Thore Göbel
-# SPDX-FileCopyrightText: 2025 MASH project contributors
 # SPDX-FileCopyrightText: 2025 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -214,6 +215,28 @@ fmd_server_config_serverkey: ""
 
 # Specify the name of the header field in which your reverse proxy records the remote IP of the client being proxied.
 fmd_server_config_remoteipheader: ""
+
+# Default FMD Server configuration template which covers the generic use case.
+# You can customize it by controlling the various variables inside it.
+#
+# For a more advanced customization, you can extend the default (see `fmd_server_configuration_yaml`)
+# or completely replace this variable with your own template.
+fmd_server_configuration_yaml: "{{ lookup('template', 'templates/config.yml.j2') }}"
+
+fmd_server_configuration_extension_yaml: |
+  # Your custom YAML configuration for FMD Server goes here.
+  # This configuration extends the default starting configuration (`fmd_server_configuration_yaml`).
+  #
+  # You can override individual variables from the default configuration, or introduce new ones.
+  #
+  # If you need something more special, you can take full control by
+  # completely redefining `fmd_server_configuration_yaml`.
+
+fmd_server_configuration_extension: "{{ fmd_server_configuration_extension_yaml | from_yaml if fmd_server_configuration_extension_yaml | from_yaml is mapping else {} }}"
+
+# Holds the final FMD Server configuration (a combination of the default and its extension).
+# You most likely don't need to touch this variable. Instead, see `fmd_server_configuration_yaml`.
+fmd_server_configuration: "{{ fmd_server_configuration_yaml | from_yaml | combine(fmd_server_configuration_extension, recursive=True) }}"
 
 # Additional environment variables.
 # See: https://gitlab.com/fmd-foss/fmd-server#via-environment-variables

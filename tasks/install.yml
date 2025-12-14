@@ -23,9 +23,16 @@
     owner: "{{ fmd_server_uid }}"
     group: "{{ fmd_server_gid }}"
   with_items:
-    - config.yml
     - env
     - labels
+
+- name: Ensure FMD Server configuration file installed
+  ansible.builtin.copy:
+    content: "{{ fmd_server_configuration | to_nice_yaml(indent=2, width=999999) }}"
+    dest: "{{ fmd_server_base_path }}/config.yml"
+    owner: "{{ fmd_server_uid }}"
+    group: "{{ fmd_server_gid }}"
+    mode: "0640"
 
 - name: Run if self-building of FMD Server container image is not enabled
   when: "not fmd_server_container_image_self_build | bool"
