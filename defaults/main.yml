@@ -238,6 +238,9 @@ fmd_server_configuration_extension: "{{ fmd_server_configuration_extension_yaml 
 # You most likely don't need to touch this variable. Instead, see `fmd_server_configuration_yaml`.
 fmd_server_configuration: "{{ fmd_server_configuration_yaml | from_yaml | combine(fmd_server_configuration_extension, recursive=True) }}"
 
+# Specify the timezone
+fmd_server_environment_variables_tz: UTC
+
 # Additional environment variables.
 # See: https://gitlab.com/fmd-foss/fmd-server#via-environment-variables
 fmd_server_environment_variables_additional_variables: ""
