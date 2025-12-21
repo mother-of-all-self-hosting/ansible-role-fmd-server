@@ -29,7 +29,7 @@ fmd_server_scheme: https
 # The hostname at which FMD Server is served.
 fmd_server_hostname: ""
 
-# The path at which FMD Server is exposed.
+# The path at which FMD Server is served.
 # This value must either be `/` or not end with a slash (e.g. `/findmydeviceserver`).
 #
 # Hosting FMD Server under a subpath does not seem to be possible due to FMD Server's
