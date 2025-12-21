@@ -123,7 +123,7 @@ fmd_server_container_labels_additional_labels: "{{ fmd_server_container_labels_a
 fmd_server_container_labels_additional_labels_auto: {}
 fmd_server_container_labels_additional_labels_custom: {}
 
-# A list of extra arguments to pass to the container (`docker run` command)
+# A list of extra arguments to pass to the container (`docker create` command)
 fmd_server_container_extra_arguments: "{{ fmd_server_container_extra_arguments_auto + fmd_server_container_extra_arguments_custom }}"
 fmd_server_container_extra_arguments_auto: []
 fmd_server_container_extra_arguments_custom: []
