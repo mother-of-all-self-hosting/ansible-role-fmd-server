@@ -24,6 +24,7 @@ fmd_server_version: 0.13.0
 fmd_server_uid: ""
 fmd_server_gid: ""
 
+# The scheme used for serving FMD Server.
 fmd_server_scheme: https
 
 # The hostname at which FMD Server is served.
@@ -49,7 +50,7 @@ fmd_server_container_image_self_build_repo: "https://gitlab.com/fmd-foss/fmd-ser
 fmd_server_container_image_self_build_repo_version: "{{ fmd_server_version if fmd_server_version != 'latest' else 'master' }}"
 fmd_server_container_image_self_build_src_files_path: "{{ fmd_server_base_path }}/docker-src"
 
-# Controls whether the container exposes its HTTP port (tcp/80 in the container).
+# Controls whether the container exposes its HTTP port (tcp/8080 in the container).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
 fmd_server_container_http_host_bind_port: ""
