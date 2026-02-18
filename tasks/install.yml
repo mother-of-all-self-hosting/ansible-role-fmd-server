@@ -34,7 +34,7 @@
     mode: "0640"
     owner: "{{ fmd_server_uid }}"
     group: "{{ fmd_server_gid }}"
-  register: fmd_server_config_result
+  register: fmd_server_config_file_result
 
 - name: Run if self-building of FMD Server container image is not enabled
   when: "not fmd_server_container_image_self_build | bool"
@@ -118,8 +118,8 @@
     fmd_server_restart_necessary: >-
       {{
         fmd_server_support_files_result.changed | default(false)
+        or fmd_server_config_file_result.changed | default(false)
         or fmd_server_systemd_service_result.changed | default(false)
-        or fmd_server_config_result.changed | default(false)
         or fmd_server_container_image_pull_result.changed | default(false)
         or fmd_server_container_image_build_result.changed | default(false)
       }}
