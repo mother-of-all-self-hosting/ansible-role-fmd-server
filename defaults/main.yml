@@ -191,6 +191,37 @@ fmd_server_systemd_wanted_services_list_default: []
 fmd_server_systemd_wanted_services_list_auto: []
 fmd_server_systemd_wanted_services_list_custom: []
 
+# Controls how long to wait for the container to stop gracefully before killing it.
+fmd_server_container_stop_grace_time_seconds: "{{ devture_systemd_docker_base_container_stop_grace_time_seconds }}"
+
+# Controls how long the pre-start cleanup should wait for stale container-name release
+# before failing startup explicitly.
+fmd_server_container_cleanup_timeout_seconds: "{{ devture_systemd_docker_base_container_cleanup_timeout_seconds }}"
+
+# Controls the delay between pre-start cleanup retries.
+fmd_server_container_cleanup_retry_delay_seconds: "{{ devture_systemd_docker_base_container_cleanup_retry_delay_seconds }}"
+
+# Shell command used in the systemd pre-start phase to deterministically remove a stale
+# container and wait until Docker releases its name.
+fmd_server_container_cleanup_command: |
+  i=0;
+  while [ "$i" -lt {{ fmd_server_container_cleanup_timeout_seconds }} ]; do
+  {{ devture_systemd_docker_base_host_command_docker }} stop -t {{ fmd_server_container_stop_grace_time_seconds }} {{ fmd_server_identifier }} >/dev/null 2>&1 || true;
+  {{ devture_systemd_docker_base_host_command_docker }} rm -f {{ fmd_server_identifier }} >/dev/null 2>&1 || true;
+  if {{ devture_systemd_docker_base_host_command_docker }} container inspect {{ fmd_server_identifier }} >/dev/null 2>&1; then
+  i=$((i + 1));
+  sleep {{ fmd_server_container_cleanup_retry_delay_seconds }};
+  continue;
+  fi;
+  if {{ devture_systemd_docker_base_host_command_docker }} info >/dev/null 2>&1; then
+  exit 0;
+  fi;
+  echo "Failed to query Docker daemon while cleaning up {{ fmd_server_identifier }}" >&2;
+  exit 1;
+  done;
+  echo "Failed to remove stale container {{ fmd_server_identifier }} after {{ fmd_server_container_cleanup_timeout_seconds }} attempts" >&2;
+  exit 1
+
 # Specify the path to listening UNIX socket. If empty, no unix sockets will be used.
 fmd_server_config_unixsocketpath: ""
 
