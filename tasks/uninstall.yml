@@ -63,7 +63,7 @@
   register: fmd_server_database_path_stat
 
 # We just want to notify the user. Deleting database is too destructive.
-- name: Notify if FMD Server local data remains
+- name: Inject the message about the remaining FMD Server local data path
   when: fmd_server_database_path_stat.stat.exists | bool
   ansible.builtin.set_fact:
     devture_playbook_runtime_messages_list: |
