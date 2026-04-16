@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2023 Slavi Pantaleev
-# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+# SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -37,6 +37,20 @@
       ansible.builtin.file:
         path: "{{ fmd_server_container_image_self_build_src_files_path }}"
         state: absent
+
+    - name: Ensure FMD Server local data path if empty
+      ansible.builtin.command:
+        cmd: "rmdir {{ fmd_server_database_path }}"
+      register: fmd_server_database_path_deletion_result
+      changed_when: fmd_server_database_path_deletion_result.rc == 0
+      failed_when: false
+
+    - name: Ensure FMD Server base path does not exist if empty
+      ansible.builtin.command:
+        cmd: "rmdir {{ fmd_server_base_path }}"
+      register: fmd_server_base_path_deletion_result
+      changed_when: fmd_server_base_path_deletion_result.rc == 0
+      failed_when: false
 
     - name: Ensure FMD Server container network does not exist
       when: fmd_server_container_network_deletion_enabled
