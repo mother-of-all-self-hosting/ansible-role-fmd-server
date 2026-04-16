@@ -38,7 +38,7 @@
         path: "{{ fmd_server_container_image_self_build_src_files_path }}"
         state: absent
 
-    - name: Ensure FMD Server local data path if empty
+    - name: Ensure FMD Server local data path does not exist if empty
       ansible.builtin.command:
         cmd: "rmdir {{ fmd_server_database_path }}"
       register: fmd_server_database_path_deletion_result
