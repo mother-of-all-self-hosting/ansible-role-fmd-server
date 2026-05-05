@@ -22,6 +22,7 @@
   when: "lookup('ansible.builtin.varnames', ('^' + item.old + '$'), wantlist=True) | length > 0"
   with_items:
     - { "old": "fmd_http_header_content_permission_policy", "new": "fmd_server_http_header_permissions_policy" }
+    - { "old": "fmd_server_container_image_force_pull", "new": "<removed> (the new community.docker.docker_image_pull module handles this natively)" }
 
 - name: Fail if required FMD Server settings not defined
   ansible.builtin.fail:

@@ -42,7 +42,6 @@ fmd_server_container_image_tag: "{{ fmd_server_version }}"
 fmd_server_container_image_registry_prefix: "{{ fmd_server_container_image_registry_prefix_upstream }}"
 fmd_server_container_image_registry_prefix_upstream: "{{ fmd_server_container_image_registry_prefix_upstream_default }}"
 fmd_server_container_image_registry_prefix_upstream_default: registry.gitlab.com/
-fmd_server_container_image_force_pull: "{{ fmd_server_container_image.endswith(':latest') }}"
 
 fmd_server_container_image_self_build: false
 fmd_server_container_image_self_build_name: "fmd-foss/fmd-server:{{ fmd_server_container_image_self_build_repo_version }}"
