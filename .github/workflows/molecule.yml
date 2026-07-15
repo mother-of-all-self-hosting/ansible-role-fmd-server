@@ -49,14 +49,6 @@ jobs:
           path: ~/.ansible/collections
           key: ansible-collections-${{ hashFiles('fmd-server/molecule/default/requirements.yml') }}
 
-      - name: Install Ansible roles
-        working-directory: fmd-server
-        run: ansible-galaxy role install -r molecule/default/requirements.yml
-
-      - name: Install Ansible collections
-        working-directory: fmd-server
-        run: ansible-galaxy collection install -r molecule/default/requirements.yml
-
       - name: Run Molecule
         working-directory: fmd-server
         run: molecule test --scenario-name ${{ matrix.scenario }}
