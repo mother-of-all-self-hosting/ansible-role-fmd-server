@@ -27,6 +27,10 @@ provisioner:
   inventory:
     group_vars:
       all:
+        # Helper variables
+        fmd_server_debug_service_enabled: false
+
+        # Variables for FMD Server
         fmd_server_uid: 1000
         fmd_server_gid: 1000
         fmd_server_hostname: fmd-server
