@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+# SPDX-FileCopyrightText: 2026 spatterlight
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Verify FMD Server systemd service
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Wait for FMD Server service to become active (up to 180s)
+      ansible.builtin.systemd:
+        name: findmydeviceserver.service
+      register: fmd_server_service
+      until: fmd_server_service.status.ActiveState == 'active'
+      retries: 36
+      delay: 5
+
+    - name: Assert FMD Server service is active
+      ansible.builtin.assert:
+        that: fmd_server_service.status.ActiveState == 'active'
+        fail_msg: "findmydeviceserver.service not active ({{ fmd_server_service.status.ActiveState }})"
+        success_msg: "findmydeviceserver.service is active"
+
+    - name: Retrieve FMD Server service log for debugging
+      when: fmd_server_debug_service_enabled | bool
+      ansible.builtin.command:
+        cmd: journalctl -xeu findmydeviceserver.service
+      changed_when: false
+
+    - name: Wait for FMD Server HTTP endpoint to respond (up to 10m)
+      ansible.builtin.uri:
+        url: "http://localhost:8080/"
+        method: GET
+        status_code: [200, 302]
+        follow_redirects: none
+      register: fmd_server_endpoint
+      until: fmd_server_endpoint.status in [200, 302]
+      retries: 120
+      delay: 5
+
+    - name: Assert FMD Server HTTP endpoint responds
+      ansible.builtin.assert:
+        that: fmd_server_endpoint.status in [200, 302]
+        fail_msg: "FMD Server did not respond as expected ({{ fmd_server_endpoint.status | default('no response') }})"
+        success_msg: "FMD Server responded with {{ fmd_server_endpoint.status }}"
+
+    - name: Show FMD Server systemd service status summary
+      ansible.builtin.debug:
+        msg:
+          - "FMD Server systemd: {{ fmd_server_service.status.ActiveState }}"
+          - "FMD Server HTTP: {{ fmd_server_endpoint.status }}"

@@ -46,7 +46,7 @@ fmd_server_container_image_registry_prefix_upstream_default: registry.gitlab.com
 fmd_server_container_image_self_build: false
 fmd_server_container_image_self_build_name: "fmd-foss/fmd-server:{{ fmd_server_container_image_self_build_repo_version }}"
 fmd_server_container_image_self_build_repo: "https://gitlab.com/fmd-foss/fmd-server.git"
-fmd_server_container_image_self_build_repo_version: "{{ fmd_server_version if fmd_server_version != 'latest' else 'master' }}"
+fmd_server_container_image_self_build_repo_version: "{{ 'v' + fmd_server_version if fmd_server_version != 'latest' else 'master' }}"
 fmd_server_container_image_self_build_src_files_path: "{{ fmd_server_base_path }}/docker-src"
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
