@@ -3,7 +3,7 @@ galaxy_info:
   author: Suguru Hirahara
   company: progressiv
   role_name: fmd_server
-  namespace: progressiv
+  namespace: mash
   description: FMD Server
   platforms:
     - name: Debian
