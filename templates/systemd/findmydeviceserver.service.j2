@@ -36,6 +36,9 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --label-file={{ fmd_server_base_path }}/labels \
       --mount type=bind,src={{ fmd_server_database_path }},dst=/var/lib/fmd-server/db/ \
       --mount type=bind,src={{ fmd_server_base_path }}/config.yml,dst=/etc/fmd-server/config.yml,ro \
+      {% for volume in fmd_server_container_additional_volumes %}
+      --mount type={{ volume.type | default('bind' if '/' in volume.src else 'volume') }},src={{ volume.src }},dst={{ volume.dst }}{{ (',' + volume.options) if volume.options | default('') else '' }} \
+      {% endfor %}
       {% for arg in fmd_server_container_extra_arguments %}
       {{ arg }} \
       {% endfor %}
