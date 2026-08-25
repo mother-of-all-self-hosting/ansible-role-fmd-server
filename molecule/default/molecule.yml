@@ -31,6 +31,20 @@ provisioner:
         # Helper variables
         fmd_server_debug_service_enabled: false
 
+        # Helper variables for the verification probe.
+        # The password hash is what a real FMD client computes with Argon2
+        # before sending it; the server only ever sees (and re-hashes) that
+        # result, so any stable string plays the same role here.
+        fmd_server_probe_base_url: http://localhost:{{ fmd_server_container_http_host_bind_port }}
+        fmd_server_probe_username: moleculeprobe
+        fmd_server_probe_salt: molecule-probe-salt
+        fmd_server_probe_password_hash: molecule-probe-inner-password-hash
+        fmd_server_probe_public_key: molecule-probe-public-key
+        fmd_server_probe_private_key: molecule-probe-private-key
+        fmd_server_probe_location_prefix: molecule-probe-location-
+        fmd_server_probe_location_latest: "{{ fmd_server_probe_location_prefix }}{{ fmd_server_config_maxsavedloc | int + 1 }}"
+        fmd_server_probe_additional_volume_destination: /probe-additional-volume
+
         # Variables for FMD Server
         fmd_server_uid: 1000
         fmd_server_gid: 1000
@@ -38,6 +52,27 @@ provisioner:
         fmd_server_hostname: localhost
         fmd_server_container_labels_traefik_enabled: false
         fmd_server_container_http_host_bind_port: 8080
+
+        # Deliberately not the 8080 the image listens on by default, so that
+        # reaching FMD Server at all proves this value arrived at the process.
+        fmd_server_container_http_port: 9099
+
+        # Without a registration token, FMD Server hands out accounts to anyone
+        # who asks. The verification asserts that an untokened registration is
+        # refused, which can only happen if the role's config.yml was read.
+        fmd_server_config_registrationtoken: molecule-probe-registration-token
+
+        # FMD Server does not need this, but the role advertises the variable,
+        # so the verification checks that what is put in it reaches the container.
+        fmd_server_container_additional_volumes_custom:
+          - type: bind
+            src: /findmydeviceserver
+            dst: "{{ fmd_server_probe_additional_volume_destination }}"
+            options: readonly
+
+        # FMD Server's own default is 500. Keeping two locations lets the
+        # verification push three and watch the oldest one get pruned.
+        fmd_server_config_maxsavedloc: 2
   env:
     # Workaround for https://github.com/ansible/molecule/issues/4391
     ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/..:/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles:~/.ansible/roles

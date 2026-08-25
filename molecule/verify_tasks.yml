@@ -1,0 +1,272 @@
+# SPDX-FileCopyrightText: 2026 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+# SPDX-FileCopyrightText: 2026 spatterlight
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+# Tasks shared by every scenario.
+#
+# FMD Server is where people's phones deposit their location history, so a test
+# that only watches the systemd unit turn active proves close to nothing: the
+# unit has `Restart=always`, and an FMD Server started with no configuration at
+# all still answers 200 on `/` and reports its version on `/version`. Everything
+# below is chosen so that it could not pass against such an instance.
+#
+# What is exercised here:
+#
+#  - the registration token from the role's config.yml is enforced (an
+#    unconfigured FMD Server accepts registrations from anyone)
+#  - a device registers, logs in, pushes a location and reads it back
+#  - retrieval without a valid access token is refused
+#  - `MaxSavedLoc` from the role's config.yml prunes the history (the value
+#    differs from FMD Server's own default of 500)
+#  - FMD Server listens on `fmd_server_container_http_port` (the scenario moves
+#    it off the image's default 8080)
+#  - the location really landed under the role's database path on the host
+#  - the running process reports the version that `fmd_server_version` pins
+
+- name: Load FMD Server role defaults
+  # Loaded under a name of its own: unscoped, these would outrank the values the
+  # scenario tunes via group_vars. Only leaf literals may be read out of it.
+  ansible.builtin.include_vars:
+    file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
+    name: fmd_server_role_defaults
+
+- name: Wait for FMD Server service to become active (up to 180s)
+  ansible.builtin.systemd:
+    name: findmydeviceserver.service
+  register: fmd_server_service
+  until: fmd_server_service.status.ActiveState == 'active'
+  retries: 36
+  delay: 5
+
+- name: Assert FMD Server service is active
+  ansible.builtin.assert:
+    that: fmd_server_service.status.ActiveState == 'active'
+    fail_msg: "findmydeviceserver.service not active ({{ fmd_server_service.status.ActiveState }})"
+    success_msg: "findmydeviceserver.service is active"
+
+- name: Retrieve FMD Server service log for debugging
+  when: fmd_server_debug_service_enabled | bool
+  ansible.builtin.command:
+    cmd: journalctl -xeu findmydeviceserver.service
+  changed_when: false
+
+- name: Wait for FMD Server HTTP endpoint to respond (up to 10m)
+  # The scenario moves the in-container port away from the 8080 that the image
+  # listens on out of the box, so reaching this at all already means the role's
+  # `fmd_server_container_http_port` arrived both at the process (through
+  # config.yml) and at the published port mapping.
+  ansible.builtin.uri:
+    url: "{{ fmd_server_probe_base_url }}/api/v1/version"
+    method: GET
+    return_content: true
+    follow_redirects: none
+  register: fmd_server_version_endpoint
+  until: fmd_server_version_endpoint.status == 200
+  retries: 120
+  delay: 5
+
+- name: Assert FMD Server runs the version the role pins
+  ansible.builtin.assert:
+    that: "fmd_server_version_endpoint.content | trim == fmd_server_role_defaults.fmd_server_version"
+    fail_msg: >-
+      FMD Server reports version {{ fmd_server_version_endpoint.content | trim }},
+      but fmd_server_version pins {{ fmd_server_role_defaults.fmd_server_version }}
+    success_msg: "FMD Server runs {{ fmd_server_version_endpoint.content | trim }}, as pinned by fmd_server_version"
+
+- name: Attempt to register an FMD Server device without the registration token
+  # An FMD Server with no RegistrationToken configured hands out accounts to
+  # anyone who asks. Getting a 401 here is what proves the token from the role's
+  # config.yml reached the process.
+  ansible.builtin.uri:
+    url: "{{ fmd_server_probe_base_url }}/api/v1/device"
+    method: PUT
+    body_format: json
+    body:
+      Salt: "{{ fmd_server_probe_salt }}"
+      HashedPassword: "{{ fmd_server_probe_password_hash }}"
+      PubKey: "{{ fmd_server_probe_public_key }}"
+      PrivKey: "{{ fmd_server_probe_private_key }}"
+      RequestedUsername: "{{ fmd_server_probe_username }}-unauthorized"
+    status_code: [401]
+
+- name: Register an FMD Server device with the registration token
+  ansible.builtin.uri:
+    url: "{{ fmd_server_probe_base_url }}/api/v1/device"
+    method: PUT
+    body_format: json
+    body:
+      Salt: "{{ fmd_server_probe_salt }}"
+      HashedPassword: "{{ fmd_server_probe_password_hash }}"
+      PubKey: "{{ fmd_server_probe_public_key }}"
+      PrivKey: "{{ fmd_server_probe_private_key }}"
+      RequestedUsername: "{{ fmd_server_probe_username }}"
+      RegistrationToken: "{{ fmd_server_config_registrationtoken }}"
+    status_code: [200]
+  register: fmd_server_registration
+
+- name: Assert the FMD Server device was registered under the requested name
+  ansible.builtin.assert:
+    that: "fmd_server_registration.json.DeviceId == fmd_server_probe_username"
+    fail_msg: "FMD Server registered {{ fmd_server_registration.json.DeviceId | default('nothing') }} instead of {{ fmd_server_probe_username }}"
+    success_msg: "FMD Server registered {{ fmd_server_probe_username }}"
+
+- name: Log in to FMD Server as the registered device
+  ansible.builtin.uri:
+    url: "{{ fmd_server_probe_base_url }}/api/v1/requestAccess"
+    method: POST
+    body_format: json
+    body:
+      IDT: "{{ fmd_server_probe_username }}"
+      Data: "{{ fmd_server_probe_password_hash }}"
+      SessionDurationSeconds: 900
+    status_code: [200]
+  register: fmd_server_login
+
+- name: Assert FMD Server handed out an access token
+  ansible.builtin.assert:
+    that: "fmd_server_login.json.Data | default('') | length > 0"
+    fail_msg: "FMD Server did not return an access token"
+    success_msg: "FMD Server returned an access token"
+
+- name: Attempt to log in to FMD Server with the wrong password
+  ansible.builtin.uri:
+    url: "{{ fmd_server_probe_base_url }}/api/v1/requestAccess"
+    method: POST
+    body_format: json
+    body:
+      IDT: "{{ fmd_server_probe_username }}"
+      Data: "{{ fmd_server_probe_password_hash }}-wrong"
+      SessionDurationSeconds: 900
+    status_code: [403]
+
+- name: Push locations to FMD Server
+  ansible.builtin.uri:
+    url: "{{ fmd_server_probe_base_url }}/api/v1/location"
+    method: POST
+    body_format: json
+    body:
+      IDT: "{{ fmd_server_login.json.Data }}"
+      Data: "{{ fmd_server_probe_location_prefix }}{{ item }}"
+    status_code: [200]
+  loop: "{{ range(1, fmd_server_config_maxsavedloc | int + 2) | list }}"
+
+- name: Read the latest location back from FMD Server
+  ansible.builtin.uri:
+    url: "{{ fmd_server_probe_base_url }}/api/v1/location"
+    method: PUT
+    body_format: json
+    body:
+      IDT: "{{ fmd_server_login.json.Data }}"
+      Data: "-1"
+    status_code: [200]
+  register: fmd_server_latest_location
+
+- name: Assert FMD Server returned the location that was pushed last
+  ansible.builtin.assert:
+    that: "fmd_server_latest_location.json.Data == fmd_server_probe_location_latest"
+    fail_msg: >-
+      FMD Server returned {{ fmd_server_latest_location.json.Data | default('nothing') }}
+      instead of {{ fmd_server_probe_location_latest }}
+    success_msg: "FMD Server returned {{ fmd_server_probe_location_latest }}"
+
+- name: Attempt to read a location from FMD Server without a valid access token
+  # The negative control for the whole round-trip: location history must not be
+  # readable by anyone who has not logged in.
+  ansible.builtin.uri:
+    url: "{{ fmd_server_probe_base_url }}/api/v1/location"
+    method: PUT
+    body_format: json
+    body:
+      IDT: "not-an-access-token"
+      Data: "-1"
+    status_code: [401]
+
+- name: Ask FMD Server how many locations it kept
+  ansible.builtin.uri:
+    url: "{{ fmd_server_probe_base_url }}/api/v1/locationDataSize"
+    method: POST
+    body_format: json
+    body:
+      IDT: "{{ fmd_server_login.json.Data }}"
+      Data: ""
+    status_code: [200]
+  register: fmd_server_location_count
+
+- name: Assert FMD Server pruned the history to the configured MaxSavedLoc
+  # One more location was pushed than `fmd_server_config_maxsavedloc` allows.
+  # An FMD Server running on its own defaults keeps 500 and would report them all.
+  ansible.builtin.assert:
+    that: "fmd_server_location_count.json.Data | int == fmd_server_config_maxsavedloc | int"
+    fail_msg: >-
+      FMD Server kept {{ fmd_server_location_count.json.Data }} locations,
+      but fmd_server_config_maxsavedloc is {{ fmd_server_config_maxsavedloc }}
+    success_msg: "FMD Server kept {{ fmd_server_config_maxsavedloc }} locations, as configured"
+
+- name: Retrieve the FMD Server container definition
+  ansible.builtin.command:
+    cmd: docker container inspect findmydeviceserver
+  register: fmd_server_container_definition
+  changed_when: false
+
+- name: Determine where FMD Server's database lives on the host
+  ansible.builtin.set_fact:
+    fmd_server_database_host_path: >-
+      {{
+        (fmd_server_container_definition.stdout | from_json | first).Mounts
+        | selectattr('Destination', 'match', '^/var/lib/fmd-server/db/?$')
+        | map(attribute='Source')
+        | first
+      }}
+
+- name: Assert FMD Server's database lives under the role's own path
+  ansible.builtin.assert:
+    that: "fmd_server_database_host_path == '/' ~ fmd_server_role_defaults.fmd_server_identifier ~ '/database'"
+    fail_msg: >-
+      FMD Server's database is bind-mounted from {{ fmd_server_database_host_path }},
+      not from /{{ fmd_server_role_defaults.fmd_server_identifier }}/database
+    success_msg: "FMD Server's database is bind-mounted from {{ fmd_server_database_host_path }}"
+
+- name: Search the FMD Server database path for the location that was pushed
+  ansible.builtin.command:
+    cmd: grep --recursive --files-with-matches --text --fixed-strings -e {{ fmd_server_probe_location_latest }} {{ fmd_server_database_host_path }}
+  register: fmd_server_database_grep
+  changed_when: false
+  failed_when: false
+
+- name: Assert the pushed location reached the role's database path
+  ansible.builtin.assert:
+    that: "fmd_server_database_grep.rc == 0"
+    fail_msg: >-
+      {{ fmd_server_probe_location_latest }} was not found anywhere under
+      {{ fmd_server_database_host_path }}
+    success_msg: "{{ fmd_server_probe_location_latest }} was found under {{ fmd_server_database_host_path }}"
+
+- name: Assert the additional volume the scenario asked for was mounted
+  # `fmd_server_container_additional_volumes` used to be declared and then
+  # ignored by every template, so anything a consumer put there was silently
+  # dropped. Nothing else in this verification would notice that.
+  ansible.builtin.assert:
+    that: >-
+      {{
+        (fmd_server_container_definition.stdout | from_json | first).Mounts
+        | selectattr('Destination', 'equalto', fmd_server_probe_additional_volume_destination)
+        | list | length == 1
+      }}
+    fail_msg: "Nothing is mounted at {{ fmd_server_probe_additional_volume_destination }} inside the container"
+    success_msg: "{{ fmd_server_probe_additional_volume_destination }} is mounted inside the container"
+
+- name: Determine which container image FMD Server runs
+  ansible.builtin.set_fact:
+    fmd_server_running_image: "{{ (fmd_server_container_definition.stdout | from_json | first).Config.Image }}"
+
+- name: Show FMD Server verification summary
+  ansible.builtin.debug:
+    msg:
+      - "FMD Server systemd: {{ fmd_server_service.status.ActiveState }}"
+      - "FMD Server version: {{ fmd_server_version_endpoint.content | trim }}"
+      - "FMD Server image: {{ fmd_server_running_image }}"
+      - "FMD Server database: {{ fmd_server_database_host_path }}"
+      - "FMD Server locations kept: {{ fmd_server_location_count.json.Data }}"

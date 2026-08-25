@@ -47,11 +47,29 @@ Currently these testing scenarios are available:
 
 ### `default`
 
-Tests a standard FMD Server installation.
+Tests a standard FMD Server installation, against the container image published by upstream.
 
 ### `default-selfbuild`
 
 Tests a standard FMD Server installation with self-building the container image.
+
+This scenario is not part of every CI run. Self-building compiles FMD Server from the tag that `fmd_server_version` points at, so it only changes behavior when that version changes; CI runs it on branches whose `defaults/main.yml` bumps a version, and on demand via `workflow_dispatch`.
+
+## What the scenarios check
+
+Both scenarios share [`verify_tasks.yml`](./verify_tasks.yml), which performs a round-trip against the running instance rather than merely watching the systemd unit turn active. That distinction matters here: the unit is configured with `Restart=always`, and an FMD Server started with no configuration at all still answers `200` on `/` and reports its version on `/version`, so neither of those observations can tell a working installation from a broken one.
+
+The shared verification:
+
+- moves the in-container port off the 8080 that the image listens on by default, so that reaching FMD Server at all proves `fmd_server_container_http_port` arrived both at the process and at the published port mapping
+- asserts that the running process reports the version `fmd_server_version` pins
+- requires FMD Server to reject a registration made without a registration token — an FMD Server that never read the role's `config.yml` hands out accounts to anyone who asks
+- registers a device, logs in as it, pushes locations and reads the newest one back
+- confirms that reading a location without a valid access token is answered with `401`, and that logging in with the wrong password is answered with `403`
+- pushes one more location than `fmd_server_config_maxsavedloc` permits and confirms the oldest one was pruned — the scenario sets a value that differs from FMD Server's own default of 500
+- looks the pushed location up on disk, under the host path that the container really bind-mounts its database from
+
+On top of that, `default` asserts that the running image is the one pulled from the registry, and `default-selfbuild` asserts that it was built locally, from a source tree checked out at the pinned tag.
 
 ## Running
 

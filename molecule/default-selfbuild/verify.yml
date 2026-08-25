@@ -1,53 +1,56 @@
-# SPDX-FileCopyrightText: 2026 spatterlight
+# SPDX-FileCopyrightText: 2026 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2026 Suguru Hirahara
+# SPDX-FileCopyrightText: 2026 spatterlight
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-- name: Verify FMD Server systemd service
+- name: Verify FMD Server
   hosts: all
   become: true
   gather_facts: false
   tasks:
-    - name: Wait for FMD Server service to become active (up to 180s)
-      ansible.builtin.systemd:
-        name: findmydeviceserver.service
-      register: fmd_server_service
-      until: fmd_server_service.status.ActiveState == 'active'
-      retries: 36
-      delay: 5
+    - name: Run the shared FMD Server verification
+      ansible.builtin.include_tasks: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks.yml"
 
-    - name: Assert FMD Server service is active
+    - name: Assert FMD Server runs the self-built image
       ansible.builtin.assert:
-        that: fmd_server_service.status.ActiveState == 'active'
-        fail_msg: "findmydeviceserver.service not active ({{ fmd_server_service.status.ActiveState }})"
-        success_msg: "findmydeviceserver.service is active"
+        that:
+          - "fmd_server_running_image == 'fmd-foss/fmd-server:v' ~ fmd_server_role_defaults.fmd_server_version"
+        fail_msg: >-
+          FMD Server runs {{ fmd_server_running_image }} instead of the self-built
+          fmd-foss/fmd-server:v{{ fmd_server_role_defaults.fmd_server_version }}
+        success_msg: "FMD Server runs the self-built {{ fmd_server_running_image }}"
 
-    - name: Retrieve FMD Server service log for debugging
-      when: fmd_server_debug_service_enabled | bool
+    - name: Retrieve the FMD Server container image definition
       ansible.builtin.command:
-        cmd: journalctl -xeu findmydeviceserver.service
+        cmd: docker image inspect {{ fmd_server_running_image }}
+      register: fmd_server_image_definition
       changed_when: false
 
-    - name: Wait for FMD Server HTTP endpoint to respond (up to 10m)
-      ansible.builtin.uri:
-        url: "http://localhost:8080/"
-        method: GET
-        status_code: [200, 302]
-        follow_redirects: none
-      register: fmd_server_endpoint
-      until: fmd_server_endpoint.status in [200, 302]
-      retries: 120
-      delay: 5
-
-    - name: Assert FMD Server HTTP endpoint responds
+    - name: Assert the FMD Server container image was built here rather than pulled
+      # The point of this scenario is that the image is compiled from source. An
+      # image that came off the registry carries a repository digest; one that
+      # `docker build` produced locally does not.
       ansible.builtin.assert:
-        that: fmd_server_endpoint.status in [200, 302]
-        fail_msg: "FMD Server did not respond as expected ({{ fmd_server_endpoint.status | default('no response') }})"
-        success_msg: "FMD Server responded with {{ fmd_server_endpoint.status }}"
+        that: "(fmd_server_image_definition.stdout | from_json | first).RepoDigests | length == 0"
+        fail_msg: "{{ fmd_server_running_image }} carries a repository digest, so it was pulled rather than built"
+        success_msg: "{{ fmd_server_running_image }} was built locally"
 
-    - name: Show FMD Server systemd service status summary
-      ansible.builtin.debug:
-        msg:
-          - "FMD Server systemd: {{ fmd_server_service.status.ActiveState }}"
-          - "FMD Server HTTP: {{ fmd_server_endpoint.status }}"
+    - name: Retrieve the version FMD Server's source tree declares
+      # The image was compiled from this checkout, and the shared verification
+      # has already confirmed that the running binary reports the pinned
+      # version. Reading it out of the source as well is what ties the two
+      # together: it shows the role checked out the right revision, rather than
+      # the build having happened to pick up something else.
+      ansible.builtin.slurp:
+        src: /{{ fmd_server_role_defaults.fmd_server_identifier }}/docker-src/version/version.go
+      register: fmd_server_source_version_file
+
+    - name: Assert the FMD Server source was checked out at the pinned version
+      ansible.builtin.assert:
+        that: "'\"' ~ fmd_server_role_defaults.fmd_server_version ~ '\"' in (fmd_server_source_version_file.content | b64decode)"
+        fail_msg: >-
+          The FMD Server source does not declare version {{ fmd_server_role_defaults.fmd_server_version }}:
+          {{ fmd_server_source_version_file.content | b64decode | trim }}
+        success_msg: "The FMD Server source declares version {{ fmd_server_role_defaults.fmd_server_version }}"
