@@ -9,6 +9,6 @@
     "`versioning=semver` on the annotation in defaults/main.yml was verified against the registry rather than assumed, and it is doing real work. registry.gitlab.com/fmd-foss/fmd-server publishes each release four times (0.16.0, 0.16.0-alpine, 0.16.0-debian, 0.16.0-distroless), plus floating `0`, `0-alpine`, `0-debian` and `0-distroless` tags, plus legacy `v0.10.0`-style ones. Strict semver reads the flavours as prereleases and skips them as unstable, and the bare `0` tags are not versions at all, which leaves exactly the plain X.Y.Z releases."
   ],
   "extends": [
-    "github>mother-of-all-self-hosting/renovate-config#v1.0.0"
+    "github>mother-of-all-self-hosting/renovate-config#v1.1.0"
   ]
 }
