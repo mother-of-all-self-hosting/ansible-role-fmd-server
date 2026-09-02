@@ -7,12 +7,6 @@
 ---
 # Tasks shared by every scenario.
 #
-# FMD Server is where people's phones deposit their location history, so a test
-# that only watches the systemd unit turn active proves close to nothing: the
-# unit has `Restart=always`, and an FMD Server started with no configuration at
-# all still answers 200 on `/` and reports its version on `/version`. Everything
-# below is chosen so that it could not pass against such an instance.
-#
 # What is exercised here:
 #
 #  - the registration token from the role's config.yml is enforced (an
