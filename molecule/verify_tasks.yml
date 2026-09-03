@@ -254,7 +254,7 @@
   ansible.builtin.set_fact:
     fmd_server_running_image: "{{ (fmd_server_container_definition.stdout | from_json | first).Config.Image }}"
 
-- name: Show FMD Server verification summary
+- name: Show the FMD Server verification summary
   ansible.builtin.debug:
     msg:
       - "FMD Server systemd: {{ fmd_server_service.status.ActiveState }}"
