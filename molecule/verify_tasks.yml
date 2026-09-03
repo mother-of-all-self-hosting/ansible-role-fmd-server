@@ -62,13 +62,11 @@
   retries: 120
   delay: 5
 
-- name: Assert FMD Server runs the version the role pins
+- name: Assert the running FMD Server is the version this role installs
   ansible.builtin.assert:
     that: "fmd_server_version_endpoint.content | trim == fmd_server_role_defaults.fmd_server_version"
-    fail_msg: >-
-      FMD Server reports version {{ fmd_server_version_endpoint.content | trim }},
-      but fmd_server_version pins {{ fmd_server_role_defaults.fmd_server_version }}
-    success_msg: "FMD Server runs {{ fmd_server_version_endpoint.content | trim }}, as pinned by fmd_server_version"
+    fail_msg: "FMD Server reports {{ fmd_server_version_endpoint.content | trim | default('none') }}, expected {{ fmd_server_role_defaults.fmd_server_version }}"
+    success_msg: "FMD Server reports {{ fmd_server_version_endpoint.content | trim }}"
 
 - name: Attempt to register an FMD Server device without the registration token
   # An FMD Server with no RegistrationToken configured hands out accounts to
