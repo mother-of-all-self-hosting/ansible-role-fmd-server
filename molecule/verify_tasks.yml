@@ -20,12 +20,13 @@
 #  - the location really landed under the role's database path on the host
 #  - the running process reports the version that `fmd_server_version` pins
 
-- name: Load FMD Server role defaults
-  # Loaded under a name of its own: unscoped, these would outrank the values the
-  # scenario tunes via group_vars. Only leaf literals may be read out of it.
+# The role is not included in this playbook, so its defaults are not in
+# scope. Reading defaults/main.yml directly ties the version assertion
+# below.
+- name: Load the role defaults
   ansible.builtin.include_vars:
     file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
-    name: fmd_server_role_defaults
+    name: fmd_server_defaults
 
 - name: Wait for FMD Server service to become active (up to 180s)
   ansible.builtin.systemd:
@@ -64,8 +65,8 @@
 
 - name: Assert the running FMD Server is the version this role installs
   ansible.builtin.assert:
-    that: "fmd_server_version_endpoint.content | trim == fmd_server_role_defaults.fmd_server_version"
-    fail_msg: "FMD Server reports {{ fmd_server_version_endpoint.content | trim | default('none') }}, expected {{ fmd_server_role_defaults.fmd_server_version }}"
+    that: "fmd_server_version_endpoint.content | trim == fmd_server_defaults.fmd_server_version"
+    fail_msg: "FMD Server reports {{ fmd_server_version_endpoint.content | trim | default('none') }}, expected {{ fmd_server_defaults.fmd_server_version }}"
     success_msg: "FMD Server reports {{ fmd_server_version_endpoint.content | trim }}"
 
 - name: Attempt to register an FMD Server device without the registration token
@@ -215,10 +216,10 @@
 
 - name: Assert FMD Server's database lives under the role's own path
   ansible.builtin.assert:
-    that: "fmd_server_database_host_path == '/' ~ fmd_server_role_defaults.fmd_server_identifier ~ '/database'"
+    that: "fmd_server_database_host_path == '/' ~ fmd_server_defaults.fmd_server_identifier ~ '/database'"
     fail_msg: >-
       FMD Server's database is bind-mounted from {{ fmd_server_database_host_path }},
-      not from /{{ fmd_server_role_defaults.fmd_server_identifier }}/database
+      not from /{{ fmd_server_defaults.fmd_server_identifier }}/database
     success_msg: "FMD Server's database is bind-mounted from {{ fmd_server_database_host_path }}"
 
 - name: Search the FMD Server database path for the location that was pushed

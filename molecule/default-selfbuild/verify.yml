@@ -16,10 +16,10 @@
     - name: Assert FMD Server runs the self-built image
       ansible.builtin.assert:
         that:
-          - "fmd_server_running_image == 'fmd-foss/fmd-server:v' ~ fmd_server_role_defaults.fmd_server_version"
+          - "fmd_server_running_image == 'fmd-foss/fmd-server:v' ~ fmd_server_defaults.fmd_server_version"
         fail_msg: >-
           FMD Server runs {{ fmd_server_running_image }} instead of the self-built
-          fmd-foss/fmd-server:v{{ fmd_server_role_defaults.fmd_server_version }}
+          fmd-foss/fmd-server:v{{ fmd_server_defaults.fmd_server_version }}
         success_msg: "FMD Server runs the self-built {{ fmd_server_running_image }}"
 
     - name: Retrieve the FMD Server container image definition
@@ -44,13 +44,13 @@
       # together: it shows the role checked out the right revision, rather than
       # the build having happened to pick up something else.
       ansible.builtin.slurp:
-        src: /{{ fmd_server_role_defaults.fmd_server_identifier }}/docker-src/version/version.go
+        src: /{{ fmd_server_defaults.fmd_server_identifier }}/docker-src/version/version.go
       register: fmd_server_source_version_file
 
     - name: Assert the FMD Server source was checked out at the pinned version
       ansible.builtin.assert:
-        that: "'\"' ~ fmd_server_role_defaults.fmd_server_version ~ '\"' in (fmd_server_source_version_file.content | b64decode)"
+        that: "'\"' ~ fmd_server_defaults.fmd_server_version ~ '\"' in (fmd_server_source_version_file.content | b64decode)"
         fail_msg: >-
-          The FMD Server source does not declare version {{ fmd_server_role_defaults.fmd_server_version }}:
+          The FMD Server source does not declare version {{ fmd_server_defaults.fmd_server_version }}:
           {{ fmd_server_source_version_file.content | b64decode | trim }}
-        success_msg: "The FMD Server source declares version {{ fmd_server_role_defaults.fmd_server_version }}"
+        success_msg: "The FMD Server source declares version {{ fmd_server_defaults.fmd_server_version }}"

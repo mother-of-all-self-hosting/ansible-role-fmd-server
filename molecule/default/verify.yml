@@ -19,11 +19,11 @@
       ansible.builtin.assert:
         that:
           - >-
-            fmd_server_running_image == fmd_server_role_defaults.fmd_server_container_image_registry_prefix_upstream_default
-            ~ 'fmd-foss/fmd-server:' ~ fmd_server_role_defaults.fmd_server_version
+            fmd_server_running_image == fmd_server_defaults.fmd_server_container_image_registry_prefix_upstream_default
+            ~ 'fmd-foss/fmd-server:' ~ fmd_server_defaults.fmd_server_version
         fail_msg: >-
           FMD Server runs {{ fmd_server_running_image }} instead of
-          {{ fmd_server_role_defaults.fmd_server_container_image_registry_prefix_upstream_default }}fmd-foss/fmd-server:{{ fmd_server_role_defaults.fmd_server_version }}
+          {{ fmd_server_defaults.fmd_server_container_image_registry_prefix_upstream_default }}fmd-foss/fmd-server:{{ fmd_server_defaults.fmd_server_version }}
         success_msg: "FMD Server runs {{ fmd_server_running_image }}"
 
     - name: Retrieve the FMD Server container image definition
