@@ -26,7 +26,7 @@
           {{ fmd_server_defaults.fmd_server_container_image_registry_prefix_upstream_default }}fmd-foss/fmd-server:{{ fmd_server_defaults.fmd_server_version }}
         success_msg: "FMD Server runs {{ fmd_server_running_image }}"
 
-    - name: Retrieve the FMD Server container image definition
+    - name: Inspect the FMD Server image
       ansible.builtin.command:
         cmd: docker image inspect {{ fmd_server_running_image }}
       register: fmd_server_image_definition

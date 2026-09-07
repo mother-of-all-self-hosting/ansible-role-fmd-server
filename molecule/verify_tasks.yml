@@ -198,7 +198,7 @@
       but fmd_server_config_maxsavedloc is {{ fmd_server_config_maxsavedloc }}
     success_msg: "FMD Server kept {{ fmd_server_config_maxsavedloc }} locations, as configured"
 
-- name: Retrieve the FMD Server container definition
+- name: Inspect the FMD Server container
   ansible.builtin.command:
     cmd: docker container inspect findmydeviceserver
   register: fmd_server_container_definition
