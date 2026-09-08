@@ -64,16 +64,16 @@
     method: GET
     return_content: true
     follow_redirects: none
-  register: fmd_server_version_endpoint
-  until: fmd_server_version_endpoint.status == 200
+  register: fmd_server_version_reported
+  until: fmd_server_version_reported.status == 200
   retries: 120
   delay: 5
 
 - name: Assert the running FMD Server is the version this role installs
   ansible.builtin.assert:
-    that: "fmd_server_version_endpoint.content | trim == fmd_server_defaults.fmd_server_version"
-    fail_msg: "FMD Server reports {{ fmd_server_version_endpoint.content | trim | default('none') }}, expected {{ fmd_server_defaults.fmd_server_version }}"
-    success_msg: "FMD Server reports {{ fmd_server_version_endpoint.content | trim }}"
+    that: "fmd_server_version_reported.content | trim == fmd_server_defaults.fmd_server_version"
+    fail_msg: "FMD Server reports {{ fmd_server_version_reported.content | trim | default('none') }}, expected {{ fmd_server_defaults.fmd_server_version }}"
+    success_msg: "FMD Server reports {{ fmd_server_version_reported.content | trim }}"
 
 - name: Attempt to register an FMD Server device without the registration token
   # An FMD Server with no RegistrationToken configured hands out accounts to
@@ -265,7 +265,7 @@
   ansible.builtin.debug:
     msg:
       - "FMD Server systemd: {{ fmd_server_service.status.ActiveState }}"
-      - "FMD Server version: {{ fmd_server_version_endpoint.content | trim }}"
+      - "FMD Server version: {{ fmd_server_version_reported.content | trim }}"
       - "FMD Server image: {{ fmd_server_running_image }}"
       - "FMD Server database: {{ fmd_server_database_host_path }}"
       - "FMD Server locations kept: {{ fmd_server_location_count.json.Data }}"
