@@ -10,6 +10,8 @@
   become: true
   gather_facts: false
   tasks:
+    - name: Verify that FMD Server works
+      block:
     - name: Run the shared FMD Server verification
       ansible.builtin.include_tasks: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks.yml"
 
@@ -39,3 +41,19 @@
         that: "(fmd_server_image_definition.stdout | from_json | first).RepoDigests | length > 0"
         fail_msg: "{{ fmd_server_running_image }} carries no repository digest, so it was not pulled from a registry"
         success_msg: "{{ fmd_server_running_image }} was pulled from a registry"
+
+      rescue:
+        # Whatever went wrong, the reason is almost always in the systemd service log.
+        - name: Retrieve the FMD Server systemd service log
+          ansible.builtin.command:
+            cmd: journalctl --no-pager --output=cat --unit=findmydeviceserver.service
+          register: fmd_server_service_log
+          changed_when: false
+
+        - name: Show the FMD Server systemd service log
+          ansible.builtin.debug:
+            var: fmd_server_service_log.stdout_lines
+
+        - name: Fail because verification did not pass
+          ansible.builtin.fail:
+            msg: "FMD Server verification failed. The systemd service log is printed above."

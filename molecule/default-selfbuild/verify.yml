@@ -10,6 +10,8 @@
   become: true
   gather_facts: false
   tasks:
+    - name: Verify that FMD Server works
+      block:
     - name: Run the shared FMD Server verification
       ansible.builtin.include_tasks: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks.yml"
 
@@ -54,3 +56,19 @@
           The FMD Server source does not declare version {{ fmd_server_defaults.fmd_server_version }}:
           {{ fmd_server_source_version_file.content | b64decode | trim }}
         success_msg: "The FMD Server source declares version {{ fmd_server_defaults.fmd_server_version }}"
+
+      rescue:
+        # Whatever went wrong, the reason is almost always in the systemd service log.
+        - name: Retrieve the FMD Server systemd service log
+          ansible.builtin.command:
+            cmd: journalctl --no-pager --output=cat --unit=findmydeviceserver.service
+          register: fmd_server_service_log
+          changed_when: false
+
+        - name: Show the FMD Server systemd service log
+          ansible.builtin.debug:
+            var: fmd_server_service_log.stdout_lines
+
+        - name: Fail because verification did not pass
+          ansible.builtin.fail:
+            msg: "FMD Server verification failed. The systemd service log is printed above."
