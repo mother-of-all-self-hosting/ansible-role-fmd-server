@@ -9,6 +9,11 @@
   hosts: all
   become: true
   gather_facts: false
+
+  vars:
+    fmd_server_verify_units:
+      - findmydeviceserver.service
+
   tasks:
     - name: Verify that FMD Server works
       block:

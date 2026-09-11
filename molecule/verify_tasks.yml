@@ -28,13 +28,14 @@
     file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
     name: fmd_server_defaults
 
-- name: Wait for the FMD Server systemd service to become active (up to 180s)
+- name: Wait for the FMD Server systemd services to become active (up to 180s each)
   ansible.builtin.systemd_service:
-    name: findmydeviceserver.service
-  register: fmd_server_service
-  until: fmd_server_service.status.ActiveState == 'active'
+    name: "{{ item }}"
+  register: fmd_server_services
+  until: fmd_server_services.status.ActiveState == 'active'
   retries: 36
   delay: 5
+  loop: "{{ fmd_server_verify_units }}"
   # So that giving up is reported by the assertion below rather than as a
   # wall of systemd unit properties.
   failed_when: false
@@ -42,17 +43,20 @@
 # `Restart=always` in the systemd unit means that even a container which crashes
 # and gets restarted reads as active here, so this is a precondition rather than
 # a result.
-- name: Assert the FMD Server systemd service is active
+- name: Assert the FMD Server systemd services are active
   ansible.builtin.assert:
-    that: fmd_server_service.status.ActiveState == 'active'
-    fail_msg: "findmydeviceserver.service is not active ({{ fmd_server_service.status.ActiveState }})"
-    success_msg: "findmydeviceserver.service is active"
+    that: fmd_server_services.results | map(attribute='status.ActiveState') | unique | list == ['active']
+    fail_msg: >-
+      Not every service is active:
+      {{ dict(fmd_server_verify_units | zip(fmd_server_services.results | map(attribute='status.ActiveState'))) }}
+    success_msg: "Every systemd service is active"
 
-- name: Retrieve the FMD Server systemd service log for debugging
+- name: Retrieve the FMD Server systemd services log for debugging
   when: fmd_server_debug_service_enabled | bool
   ansible.builtin.command:
-    cmd: journalctl --no-pager --output=cat --unit=findmydeviceserver.service
+    cmd: "journalctl --no-pager --output=cat --unit={{ item }}"
   changed_when: false
+  loop: "{{ fmd_server_verify_units }}"
 
 - name: Wait for FMD Server HTTP endpoint to respond (up to 10m)
   # The scenario moves the in-container port away from the 8080 that the image
@@ -264,7 +268,7 @@
 - name: Show the FMD Server verification summary
   ansible.builtin.debug:
     msg:
-      - "FMD Server systemd: {{ fmd_server_service.status.ActiveState }}"
+      - "FMD Server systemd: {% for unit, state in fmd_server_verify_units | zip(fmd_server_services.results | map(attribute='status.ActiveState')) %}{{ unit }} ({{ state }}){% if not loop.last %}, {% endif %}{% endfor %}"
       - "FMD Server version: {{ fmd_server_version_reported.content | trim }}"
       - "FMD Server image: {{ fmd_server_running_image }}"
       - "FMD Server database: {{ fmd_server_database_host_path }}"
