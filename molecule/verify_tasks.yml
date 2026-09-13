@@ -264,12 +264,3 @@
 - name: Determine which container image FMD Server runs
   ansible.builtin.set_fact:
     fmd_server_running_image: "{{ (fmd_server_container_definition.stdout | from_json | first).Config.Image }}"
-
-- name: Show the FMD Server verification summary
-  ansible.builtin.debug:
-    msg:
-      - "FMD Server systemd: {% for unit, state in fmd_server_verify_units | zip(fmd_server_services.results | map(attribute='status.ActiveState')) %}{{ unit }} ({{ state }}){% if not loop.last %}, {% endif %}{% endfor %}"
-      - "FMD Server version: {{ fmd_server_version_reported.content | trim }}"
-      - "FMD Server image: {{ fmd_server_running_image }}"
-      - "FMD Server database: {{ fmd_server_database_host_path }}"
-      - "FMD Server locations kept: {{ fmd_server_location_count.json.Data }}"

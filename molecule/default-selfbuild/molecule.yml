@@ -30,6 +30,7 @@ provisioner:
       all:
         # Helper variables
         fmd_server_debug_service_enabled: false
+        fmd_server_restarts_check_enabled: true
 
         # Helper variables for the verification probe.
         # The password hash is what a real FMD client computes with Argon2
