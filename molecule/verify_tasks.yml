@@ -211,14 +211,14 @@
 - name: Inspect the FMD Server container
   ansible.builtin.command:
     cmd: docker container inspect findmydeviceserver
-  register: fmd_server_container_definition
+  register: fmd_server_container
   changed_when: false
 
 - name: Determine where FMD Server's database lives on the host
   ansible.builtin.set_fact:
     fmd_server_database_host_path: >-
       {{
-        (fmd_server_container_definition.stdout | from_json | first).Mounts
+        (fmd_server_container.stdout | from_json | first).Mounts
         | selectattr('Destination', 'match', '^/var/lib/fmd-server/db/?$')
         | map(attribute='Source')
         | first
@@ -254,7 +254,7 @@
   ansible.builtin.assert:
     that: >-
       {{
-        (fmd_server_container_definition.stdout | from_json | first).Mounts
+        (fmd_server_container.stdout | from_json | first).Mounts
         | selectattr('Destination', 'equalto', fmd_server_probe_additional_volume_destination)
         | list | length == 1
       }}
@@ -263,4 +263,4 @@
 
 - name: Determine which container image FMD Server runs
   ansible.builtin.set_fact:
-    fmd_server_running_image: "{{ (fmd_server_container_definition.stdout | from_json | first).Config.Image }}"
+    fmd_server_running_image: "{{ (fmd_server_container.stdout | from_json | first).Config.Image }}"
