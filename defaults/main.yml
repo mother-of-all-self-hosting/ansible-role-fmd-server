@@ -60,10 +60,16 @@ fmd_server_container_network_deletion_enabled: true
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
 fmd_server_container_http_host_bind_port: ""
 
+# Specify how the metrics container publishes its HTTP port (as defined by `fmd_server_container_metrics_port`).
+#
+# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
+fmd_server_container_metrics_host_bind_port: ""
+
 # The port number in the container.
-# FMD Server is told to listen on it (see `fmd_server_config_portinsecure`),
-# and the Traefik labels point the reverse proxy at it.
 fmd_server_container_http_port: 8080
+
+# The port number of the metrics server in the container
+fmd_server_container_metrics_port: 9100
 
 # A list of additional container networks that the container would be connected to.
 # The role does not create these networks, so make sure they already exist.
@@ -98,6 +104,21 @@ fmd_server_container_labels_traefik_tls_certResolver: default  # noqa var-naming
 fmd_server_container_labels_traefik_middleware_basic_auth_enabled: false
 # See: https://doc.traefik.io/traefik/reference/routing-configuration/http/middlewares/basicauth/
 fmd_server_container_labels_traefik_middleware_basic_auth_users: ""
+
+# Controls if labels are added to expose the Prometheus metrics publicly.
+fmd_server_container_labels_traefik_metrics_enabled: false
+fmd_server_container_labels_traefik_metrics_hostname: "{{ fmd_server_hostname }}"
+# The path prefix must either be `/` or not end with a slash (e.g. `/metrics`).
+fmd_server_container_labels_traefik_metrics_path_prefix: /metrics
+fmd_server_container_labels_traefik_metrics_rule: "Host(`{{ fmd_server_container_labels_traefik_metrics_hostname }}`){% if fmd_server_container_labels_traefik_metrics_path_prefix != '/' %} && PathPrefix(`{{ fmd_server_container_labels_traefik_metrics_path_prefix }}`){% endif %}"
+fmd_server_container_labels_traefik_metrics_priority: 0
+fmd_server_container_labels_traefik_metrics_entrypoints: "{{ fmd_server_container_labels_traefik_entrypoints }}"
+fmd_server_container_labels_traefik_metrics_middlewares: []
+fmd_server_container_labels_traefik_metrics_tls: "{{ fmd_server_container_labels_traefik_metrics_entrypoints != 'web' }}"
+fmd_server_container_labels_traefik_metrics_tls_certResolver: "{{ fmd_server_container_labels_traefik_tls_certResolver }}"  # noqa var-naming
+fmd_server_container_labels_traefik_metrics_middleware_basic_auth_enabled: false
+# See: https://doc.traefik.io/traefik/reference/routing-configuration/http/middlewares/basicauth/
+fmd_server_container_labels_traefik_metrics_middleware_basic_auth_users: ""
 
 # Controls which additional headers to attach to all HTTP requests.
 # To add your own custom request headers, use `fmd_server_container_labels_traefik_additional_request_headers_custom`
@@ -295,6 +316,8 @@ fmd_server_configuration: "{{ fmd_server_configuration_yaml | from_yaml | combin
 
 # Specify the timezone
 fmd_server_environment_variables_tz: UTC
+
+fmd_server_environment_variables_fmd_metricsaddrport: ""
 
 # Additional environment variables.
 # See: https://gitlab.com/fmd-foss/fmd-server#via-environment-variables
