@@ -58,19 +58,15 @@ After adjusting the hostname, make sure to adjust your DNS records to point the 
 
 **Note**: hosting FMD Server under a subpath (by configuring the `fmd_server_path_prefix` variable) does not seem to be possible due to FMD Server's technical limitations.
 
-### Set a registration token (recommended)
+### Set a registration token
 
-With the default setting, the instance is public: anyone who can reach the hostname can create an account on it, without invitation, approval or rate limit, by sending a single request to `PUT /api/v1/device`. Whoever does so can then use your server to store location history and photos from their own devices — up to `fmd_server_config_maxsavedloc` locations and `fmd_server_config_maxsavedpic` pictures per account, indefinitely, on your disk. FMD Server has no administration interface for listing or removing the accounts that appear this way.
-
-What such a stranger cannot do is read anyone else's data. Locations, pictures and the account's private key are encrypted by the FMD client before they are uploaded, the private key is unlocked with the account's password, and every read of stored data requires an access token obtained by logging in (`POST /api/v1/requestAccess`), which FMD Server locks after five failed attempts.
-
-To make the instance private and have it require a token for registration, set it by adding the following configuration to your `vars.yml` file. Make sure to replace `YOUR_TOKEN_HERE` with your own value. Generating a strong token (e.g. `pwgen -s 64 1`) is recommended.
+The instance is configured to require a token for registration to be specified. You can specify one by adding the following configuration to your `vars.yml` file. Make sure to replace `YOUR_TOKEN_HERE` with your own value. Generating a strong token (e.g. `pwgen -s 64 1`) is recommended.
 
 ```yaml
 fmd_server_config_registrationtoken: YOUR_TOKEN_HERE
 ```
 
-The token is only checked at registration time. Devices that have already registered keep working if you set, change or remove it later, so adding one to an instance that is already in use closes it to new registrations without disturbing the existing devices.
+The token is only checked at registration time.
 
 ### Extending the configuration
 
@@ -94,7 +90,7 @@ If you use the MASH playbook, the shortcut commands with the [`just` program](ht
 
 After running the command for installation, FMD Server becomes available at the specified hostname like `https://example.com`.
 
-To use it, first you need to [download the client (FMD)](https://f-droid.org/packages/de.nulide.findmydevice/) and install it on your device. Open the application, go to Settings, select "FMD Server", and input the URL to the "Server URL" area. Then, select "Register" to register the device to the server by inputting FMD ID, password, and the registration token specified to `fmd_server_config_registrationtoken` if the instance is set to private.
+To use it, first you need to [download the client (FMD)](https://f-droid.org/packages/de.nulide.findmydevice/) and install it on your device. Open the application, go to Settings, select "FMD Server", and input the URL to the "Server URL" area. Then, select "Register" to register the device to the server by inputting FMD ID, password, and the registration token specified to `fmd_server_config_registrationtoken`.
 
 After registering the device to the server, please make sure to grant necessary permissions to the application as instructed on it. You also might want to log in to the instance on a web browser and test if the application and server work as expected by dispatching commands from the UI to ring the phone, lock it, have it take photos with front and back cameras, etc.
 
