@@ -53,7 +53,7 @@
           # together: it shows the role checked out the right revision, rather than
           # the build having happened to pick up something else.
           ansible.builtin.slurp:
-            src: /{{ fmd_server_defaults.fmd_server_identifier }}/docker-src/version/version.go
+            src: /{{ fmd_server_defaults.fmd_server_identifier }}/docker-src/constants/constants.go
           register: fmd_server_source_version_file
 
         - name: Assert the FMD Server source was checked out at the pinned version
