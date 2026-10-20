@@ -273,9 +273,6 @@ fmd_server_config_unixsocketchmod: "0660"
 fmd_server_config_portsecure: 8443
 fmd_server_config_portinsecure: "{{ fmd_server_container_http_port }}"
 
-# Specify the length for the user IDs that are generated
-fmd_server_config_useridlength: 5
-
 # Specify the number of location points or pictures FMD Server should save per account
 fmd_server_config_maxsavedloc: 1000
 fmd_server_config_maxsavedpic: 10
