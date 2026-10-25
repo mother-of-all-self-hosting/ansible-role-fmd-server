@@ -70,9 +70,7 @@ The token is only checked at registration time.
 
 ### Integrating with Prometheus (optional)
 
-FMD Server can natively expose metrics to Prometheus.
-
-If you are looking for an integration, you can check out the MASH playbook. Refer to [this section of the documentation on the playbook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/components/fmd_server/README.md#integrating-with-prometheus-optional) for more information.
+FMD Server can natively expose metrics to Prometheus. If you are looking for an integration, you can check out the MASH Ansible playbook. Please refer to the service's documentation over there for more information.
 
 ### Extending the configuration
 
