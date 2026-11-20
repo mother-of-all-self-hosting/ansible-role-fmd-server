@@ -33,9 +33,6 @@
   with_items:
     - fmd_server_uid
     - fmd_server_gid
-    - fmd_server_hostname
-    - fmd_server_path_prefix
-    - fmd_server_container_network
     - fmd_server_config_registrationtoken
 
 - name: Run if Traefik is enabled
