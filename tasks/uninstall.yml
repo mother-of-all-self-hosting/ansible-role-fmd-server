@@ -53,7 +53,7 @@
       failed_when: false
 
     - name: Ensure FMD Server container network does not exist
-      when: fmd_server_container_network_deletion_enabled
+      when: fmd_server_container_network_deletion_enabled and fmd_server_container_network != 'host'
       block:
         - name: Ensure FMD Server container network does not exist via community.docker.docker_network
           when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
